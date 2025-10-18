@@ -8,7 +8,7 @@ export default function Header(){
             <div>
                 <Link href="/" className="mx-2 text-lg" prefetch={false}>Home</Link>
                 <Link href="/shop" className="mx-2 text-lg" prefetch={false}>Collection</Link>
-                <Link href="/about" className="mx-2 text-lg" prefetch={false}>Products</Link>
+                <Link href="/products" className="mx-2 text-lg" prefetch={false}>Products</Link>
             </div>
             <div className="flex items-center gap-x-5">
                 <SearchIcon/>
