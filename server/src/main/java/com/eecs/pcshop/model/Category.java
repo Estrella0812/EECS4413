@@ -8,5 +8,6 @@ public enum Category {
     STORAGE,
     MOTHERBOARD,
     COOLER,
+    CASE,
     PERIPHERAL,
 }
