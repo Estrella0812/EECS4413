@@ -20,7 +20,7 @@ export default function Home() {
 
       <section className="max-w-7xl mx-auto my-38">
         <h2 className="text-3xl font-bold mb-4 text-lefts">CATEGORIES</h2>
-        <div className="grid lg:grid-cols-4 grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="bg-zinc-900 rounded-lg p-4 w-full aspect-square">
             </div>

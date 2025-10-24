@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Products(){
@@ -44,7 +45,7 @@ export default function Products(){
             </section>
             <section className="lg:col-span-9 grid grid-cols-3 gap-4">
                 {Array.from({length: 12}).map((_, index) => (
-                    <div className="p-4 bg-zinc-900 rounded-lg aspect-square" key={index}/>
+                    <Link href="/productdetail/1" className="p-4 bg-zinc-900 rounded-lg aspect-square" key={index} prefetch={false}/>
                 ))}
             </section>
         </div>
