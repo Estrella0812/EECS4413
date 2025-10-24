@@ -2,7 +2,7 @@
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
-    description TEXT,
+    description JSON,
     price DECIMAL(5, 2) UNSIGNED NOT NULL,
     category ENUM(
         'CPU',
@@ -22,12 +22,12 @@ CREATE TABLE products (
 CREATE TABLE brands (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT
 );
 
 CREATE TABLE images (
     id SERIAL PRIMARY KEY,
-    product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    is_main BIT(1),
     url TEXT NOT NULL,
-    alt_text VARCHAR(255)
+    alt_text VARCHAR(255),
+    product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
 );

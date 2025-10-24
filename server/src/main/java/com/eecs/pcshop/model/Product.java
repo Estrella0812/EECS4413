@@ -2,33 +2,42 @@ package com.eecs.pcshop.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "products")
 public class Product {
+
+    public enum Category {
+        CPU, GPU, PSU, MEMORY, STORAGE, MOTHERBOARD, COOLER, CASE, PERIPHERAL
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price", nullable = false)
     private Double price;
-    private Integer stock;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "category")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity = 0;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+    private List<Image> images;
 
-    // getters and setters
 }
