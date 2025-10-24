@@ -14,8 +14,6 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./mysql_volume/:/var/lib/mysql
-      - ./src/main/resources/db/:/docker-entrypoint-initdb.d
-
   app:
     container_name: pcshop-app
     build: .
