@@ -1,17 +1,13 @@
 -- Products
-DROP TABLE IF EXISTS brands;
-DROP TABLE IF EXISTS products;
-DROP TABLE IF EXISTS images;
-
 CREATE TABLE brands (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
-    description JSON,
+    description TEXT,
     price DECIMAL(5, 2) UNSIGNED NOT NULL,
     category ENUM('CPU', 'GPU', 'PSU', 'MEMORY', 'STORAGE', 'MOTHERBOARD', 'COOLER', 'CASE', 'PERIPHERAL') NOT NULL,
     quantity INT UNSIGNED NOT NULL DEFAULT 0,
@@ -19,7 +15,7 @@ CREATE TABLE products (
 );
 
 CREATE TABLE images (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     is_main BIT(1),
     url TEXT NOT NULL,
     alt_text VARCHAR(255),
