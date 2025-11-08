@@ -66,3 +66,25 @@ export const ChevDownIcon = ({ size = 24, color = "currentColor", className = ""
         <path d="M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z"/>
     </svg>
 );
+
+export const PurchaseHistoryIcon = () => (
+   <svg
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    className="h-5 w-5"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* receipt */}
+    <path d="M3 3v16l2-1 2 1 2-1 2 1 2-1 2 1 2-1V3z" />
+    <path d="M7 7h6" />
+    <path d="M7 11h4" />
+    {/* small clock overlay at top-right */}
+    <circle cx="18" cy="7" r="3" />
+    <path d="M18 6v2h1" />
+  </svg>
+);
