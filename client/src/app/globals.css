@@ -16,3 +16,12 @@ body {
   background: linear-gradient(145deg, #8738e0, #7b5be4, #be32b0, #ff1493);
   /* background: linear-gradient(135deg, #ff66b3, #c44dff, #66ccff, #ff4da6); */
 }
+
+.input{
+  background: var(--darker-background);
+  color: var(--foreground);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+}
