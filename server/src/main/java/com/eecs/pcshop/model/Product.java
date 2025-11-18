@@ -1,12 +1,17 @@
 package com.eecs.pcshop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     public enum Category {
@@ -33,11 +38,13 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 0;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)
+    @JsonBackReference(value = "brand-products")
     private Brand brand;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Image> images;
 
 }

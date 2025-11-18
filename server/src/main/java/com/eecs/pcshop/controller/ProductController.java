@@ -29,4 +29,34 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // sort by price ascending
+    @GetMapping("/sort/price/asc")
+    public ResponseEntity<List<Product>> getProductsPriceLowToHigh() {
+        return ResponseEntity.ok(productRepository.findAllByOrderByPriceAsc());
+    }
+
+    // sort by price descending
+    @GetMapping("/sort/price/desc")
+    public ResponseEntity<List<Product>> getProductsPriceHighToLow() {
+        return ResponseEntity.ok(productRepository.findAllByOrderByPriceDesc());
+    }
+
+    // Sort by category
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Product.Category category) {
+        return ResponseEntity.ok(productRepository.findByCategory(category));
+    }
+
+    // category + price ascending
+    @GetMapping("/category/{category}/price/asc")
+    public ResponseEntity<List<Product>> getProductsByCategoryPriceAsc(@PathVariable Product.Category category) {
+        return ResponseEntity.ok(productRepository.findByCategoryOrderByPriceAsc(category));
+    }
+
+    // category + price descending
+    @GetMapping("/category/{category}/price/desc")
+    public ResponseEntity<List<Product>> getProductsByCategoryPriceDesc(@PathVariable Product.Category category) {
+        return ResponseEntity.ok(productRepository.findByCategoryOrderByPriceDesc(category));
+    }
 }

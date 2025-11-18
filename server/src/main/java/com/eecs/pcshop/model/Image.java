@@ -1,10 +1,14 @@
 package com.eecs.pcshop.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data
 @Table(name = "images")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
     @Id
@@ -22,6 +26,7 @@ public class Image {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
     private Product product;
 
 }

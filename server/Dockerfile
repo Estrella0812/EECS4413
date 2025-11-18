@@ -1,7 +1,15 @@
 FROM eclipse-temurin:21-alpine
 
-ADD target/*.jar app.jar
+WORKDIR /app
 
-EXPOSE 8080
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN chmod +x mvnw
+
+RUN ./mvnw -B package -DskipTests
+
+COPY src src
+
+CMD ["./mvnw", "spring-boot:run"]
