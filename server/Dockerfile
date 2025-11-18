@@ -8,8 +8,8 @@ COPY pom.xml .
 
 RUN chmod +x mvnw
 
-RUN ./mvnw -B package -DskipTests
-
 COPY src src
+
+RUN ./mvnw -B package -DskipTests
 
 CMD ["./mvnw", "spring-boot:run"]

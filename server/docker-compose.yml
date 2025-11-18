@@ -2,7 +2,6 @@ services:
   mysql:
     container_name: 'pcshop-db'
     image: 'mysql:9.4.0'
-    restart: always
     ports:
       - '3306:3306'
     environment:
@@ -11,12 +10,11 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./mysql_volume/:/var/lib/mysql
+      - mysql_volume:/var/lib/mysql
   app:
     container_name: pcshop-app
     platform: linux/amd64
     build: .
-    restart: always
     depends_on:
       - mysql
     ports:
@@ -31,3 +29,5 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./src:/app/src
+volumes:
+  mysql_volume:
