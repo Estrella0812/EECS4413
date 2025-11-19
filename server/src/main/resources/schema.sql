@@ -1,9 +1,3 @@
--- Brands
-CREATE TABLE IF NOT EXISTS brands (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
-);
-
 -- Products
 CREATE TABLE IF NOT EXISTS products (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -14,16 +8,11 @@ CREATE TABLE IF NOT EXISTS products (
         'CPU', 'GPU', 'PSU', 'MEMORY', 'STORAGE',
         'MOTHERBOARD', 'COOLER', 'CASE', 'PERIPHERAL'
     ) NOT NULL,
-    quantity INT UNSIGNED NOT NULL DEFAULT 0,
-
-    -- define the column first
-    brand_id BIGINT UNSIGNED,
-
-    -- then the foreign key constraint
-    CONSTRAINT fk_products_brand
-        FOREIGN KEY (brand_id)
-        REFERENCES brands(id)
-        ON DELETE CASCADE
+    brand ENUM(
+        'AMD', 'Intel', 'NVIDIA', 'ASUS', 'MSI', 'Corsair',
+        'Samsung', 'Kingston', 'EVGA', 'CoolerMaster'
+    ) NOT NULL,
+    quantity INT UNSIGNED NOT NULL DEFAULT 0
 );
 
 -- Images

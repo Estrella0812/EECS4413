@@ -18,6 +18,10 @@ public class Product {
         CPU, GPU, PSU, MEMORY, STORAGE, MOTHERBOARD, COOLER, CASE, PERIPHERAL
     }
 
+    public enum Brand {
+        AMD, Intel, NVIDIA, ASUS, MSI, Corsair, Samsung, Kingston, EVGA, CoolerMaster
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,9 +42,8 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 0;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = false)
-    @JsonBackReference(value = "brand-products")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "brand")
     private Brand brand;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
