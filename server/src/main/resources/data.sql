@@ -1,9 +1,53 @@
-INSERT IGNORE INTO brands (name) VALUES ('AMD');
-
-INSERT IGNORE INTO products (name, description, price, category, quantity, brand_id)
-VALUES (
-    'AMD Ryzen™ 7 7800X3D Gaming Processor', 'TEST', 359.00, 'CPU', 10, 1
-    );
-
-INSERT IGNORE INTO images (is_main, url, alt_text, product_id)
-VALUES (1, '7800x3d.jpg', 'computer processor', 1);
+INSERT IGNORE INTO products (name, description, price, category, quantity, brand)
+VALUES
+('AMD Ryzen™ 7 7800X3D', 'High performance CPU for gaming', 359.00, 'CPU', 10, 'AMD'),
+('AMD Ryzen™ 9 7950X', 'Flagship AMD CPU with 16 cores', 699.00, 'CPU', 6, 'AMD'),
+('Intel Core i9-13900K', 'Top-tier Intel CPU for gaming and productivity', 589.00, 'CPU', 8, 'Intel'),
+('Intel Core i7-13700K', 'Powerful mid-tier CPU', 419.00, 'CPU', 10, 'Intel'),
+('NVIDIA GeForce RTX 4090', 'Flagship graphics card for 4K gaming', 1599.00, 'GPU', 5, 'NVIDIA'),
+('NVIDIA GeForce RTX 4080', 'High-end GPU for 4K/1440p gaming', 1199.00, 'GPU', 6, 'NVIDIA'),
+('AMD Radeon RX 7900 XTX', 'High performance AMD GPU', 999.00, 'GPU', 7, 'AMD'),
+('AMD Radeon RX 7900 XT', 'High-end AMD GPU for gaming', 899.00, 'GPU', 8, 'AMD'),
+('ASUS ROG Strix B650-E', 'Gaming motherboard with PCIe 5.0 support', 299.00, 'MOTHERBOARD', 15, 'ASUS'),
+('ASUS TUF Gaming B550-PLUS', 'Reliable AMD motherboard', 179.00, 'MOTHERBOARD', 20, 'ASUS'),
+('MSI MPG Z790 Carbon', 'High-end motherboard for Intel CPUs', 349.00, 'MOTHERBOARD', 12, 'MSI'),
+('MSI PRO B660M-A', 'Budget Intel motherboard', 129.00, 'MOTHERBOARD', 18, 'MSI'),
+('Corsair Vengeance RGB 32GB', 'DDR5 memory kit with RGB lighting', 179.00, 'MEMORY', 25, 'Corsair'),
+('Corsair Vengeance LPX 16GB', 'DDR4 memory kit, reliable and fast', 89.00, 'MEMORY', 30, 'Corsair'),
+('Samsung 970 EVO Plus 1TB', 'NVMe M.2 SSD with high speed', 129.00, 'STORAGE', 22, 'Samsung'),
+('Samsung 980 PRO 2TB', 'High-end NVMe SSD for gaming and workstation', 349.00, 'STORAGE', 12, 'Samsung'),
+('Kingston FURY Beast 32GB', 'High-performance DDR5 MEMORY', 199.00, 'MEMORY', 20, 'Kingston'),
+('Kingston NV2 1TB', 'Affordable NVMe SSD', 99.00, 'STORAGE', 25, 'Kingston'),
+('Intel Core i5-13600K', 'Mid-range CPU for gaming', 319.00, 'CPU', 15, 'Intel'),
+('AMD Ryzen™ 5 7600', 'Affordable CPU with 6 cores', 229.00, 'CPU', 18, 'AMD'),
+('NVIDIA GeForce RTX 4070 Ti', 'High-end GPU for 1440p/4K gaming', 799.00, 'GPU', 6, 'NVIDIA'),
+('NVIDIA GeForce RTX 4060', 'Affordable high-performance graphics card', 399.00, 'GPU', 10, 'NVIDIA'),
+('ASUS ROG Crosshair X670E', 'Premium AMD motherboard', 499.00, 'MOTHERBOARD', 8, 'ASUS'),
+('MSI MAG B550 Tomahawk', 'Balanced motherboard for AMD CPUs', 189.00, 'MOTHERBOARD', 14, 'MSI'),
+('Corsair Dominator Platinum 64GB', 'High-end DDR5 memory kit', 399.00, 'MEMORY', 10, 'Corsair'),
+('Samsung 870 EVO 4TB', 'Reliable SATA SSD for storage', 449.00, 'STORAGE', 6, 'Samsung'),
+('Kingston A2000 500GB', 'Entry-level NVMe SSD', 55.00, 'STORAGE', 30, 'Kingston'),
+('Intel Core i3-13100', 'Budget CPU for everyday tasks', 149.00, 'CPU', 20, 'Intel'),
+('AMD Ryzen™ 3 4100', 'Affordable 4-core CPU', 99.00, 'CPU', 22, 'AMD'),
+('NVIDIA GeForce RTX 4050', 'Entry-level gaming GPU', 299.00, 'GPU', 12, 'NVIDIA'),
+('AMD Radeon RX 7600', 'Mid-range AMD GPU', 329.00, 'GPU', 15, 'AMD'),
+('ASUS PRIME B760-PLUS', 'Budget motherboard for Intel', 119.00, 'MOTHERBOARD', 18, 'ASUS'),
+('MSI PRO B550M-P', 'Affordable AMD motherboard', 109.00, 'MOTHERBOARD', 20, 'MSI'),
+('Corsair Vengeance RGB 16GB', 'DDR5 MEMORY kit', 99.00, 'MEMORY', 28, 'Corsair'),
+('Kingston FURY Beast 16GB', 'DDR5 MEMORY, high-performance', 109.00, 'MEMORY', 30, 'Kingston'),
+('Samsung 970 EVO Plus 500GB', 'High-speed NVMe SSD', 69.00, 'STORAGE', 25, 'Samsung'),
+('Samsung 980 PRO 1TB', 'Fast NVMe SSD for gaming', 179.00, 'STORAGE', 15, 'Samsung'),
+('Intel Core i7-12700', 'Older generation high-performance CPU', 349.00, 'CPU', 8, 'Intel'),
+('AMD Ryzen™ 9 7900X', 'High-end AMD CPU', 549.00, 'CPU', 7, 'AMD'),
+('NVIDIA GeForce RTX 4080 Ti', 'Premium GPU for enthusiasts', 1399.00, 'GPU', 4, 'NVIDIA'),
+('ASUS ROG STRIX Z690-E', 'Intel premium motherboard', 399.00, 'MOTHERBOARD', 10, 'ASUS'),
+('MSI MAG Z690 Tomahawk', 'Balanced Intel motherboard', 259.00, 'MOTHERBOARD', 12, 'MSI'),
+('Corsair Vengeance RGB Pro 32GB', 'DDR4 MEMORY kit with RGB', 149.00, 'MEMORY', 18, 'Corsair'),
+('Kingston NV2 2TB', 'Affordable large NVMe SSD', 179.00, 'STORAGE', 12, 'Kingston'),
+('Samsung 870 QVO 8TB', 'High capacity SATA SSD', 699.00, 'STORAGE', 4, 'Samsung'),
+('Intel Core i5-12400', 'Reliable CPU for everyday gaming', 209.00, 'CPU', 14, 'Intel'),
+('AMD Ryzen™ 5 5600X', 'Popular 6-core CPU', 199.00, 'CPU', 16, 'AMD'),
+('NVIDIA GeForce RTX 3090', 'High-end GPU for creators', 1499.00, 'GPU', 3, 'NVIDIA'),
+('ASUS TUF Gaming X570-PLUS', 'AMD motherboard with PCIe 4.0', 199.00, 'MOTHERBOARD', 10, 'ASUS'),
+('MSI B450 Tomahawk MAX', 'Budget AMD motherboard', 109.00, 'MOTHERBOARD', 15, 'MSI'),
+('Corsair Vengeance LPX 32GB', 'DDR4 memory kit', 129.00, 'MEMORY', 20, 'Corsair');
