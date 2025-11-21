@@ -3,6 +3,7 @@ package com.eecs.pcshop.model;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,9 +32,10 @@ public class User implements UserDetails{
     private String password;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Cart cart;
     
-        @Override
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(); // no roles for now
     }
