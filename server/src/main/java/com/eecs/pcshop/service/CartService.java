@@ -39,16 +39,17 @@ public class CartService {
 
         if (item != null) {
             item.setQuantity(item.getQuantity() + quantity);
-            cartItemRepository.save(item);
         } else {
-            CartItem newItem = new CartItem();
-            newItem.setCart(cart);
-            newItem.setProduct(product);
-            newItem.setQuantity(quantity);
-            cartItemRepository.save(newItem);
-        }
+            item = new CartItem();
+            item.setCart(cart);
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            cart.getItems().add(item);
 
-        return cartRepository.findById(cart.getId()).get();
+        }
+        cartItemRepository.save(item);
+
+        return cart;
     }
 
     public Cart updateQuantity(Long userId, Long productId, int quantity) {
