@@ -39,8 +39,8 @@ public class Product {
     @Column(name = "category")
     private Category category;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity = 0;
+    @Column(name = "stock", nullable = false)
+    private Integer stock;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "brand")

@@ -1,4 +1,4 @@
-INSERT IGNORE INTO products (name, description, price, category, quantity, brand)
+INSERT IGNORE INTO products (name, description, price, category, stock, brand)
 VALUES
 ('AMD Ryzen™ 7 7800X3D', 'High performance CPU for gaming', 359.00, 'CPU', 10, 'AMD'),
 ('AMD Ryzen™ 9 7950X', 'Flagship AMD CPU with 16 cores', 699.00, 'CPU', 6, 'AMD'),
