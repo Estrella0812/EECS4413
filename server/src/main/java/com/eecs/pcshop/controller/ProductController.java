@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import com.eecs.pcshop.model.Product;
 import com.eecs.pcshop.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,5 +59,12 @@ public class ProductController {
     @GetMapping("/category/{category}/price/desc")
     public ResponseEntity<List<Product>> getProductsByCategoryPriceDesc(@PathVariable Product.Category category) {
         return ResponseEntity.ok(productRepository.findByCategoryOrderByPriceDesc(category));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/add")
+    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+        //TODO: need ability to upload images
+        return ResponseEntity.ok(productRepository.save(product));
     }
 }
