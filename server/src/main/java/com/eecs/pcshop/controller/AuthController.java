@@ -4,8 +4,10 @@ import com.eecs.pcshop.model.Cart;
 import com.eecs.pcshop.model.User;
 import com.eecs.pcshop.repository.UserRepository;
 import com.eecs.pcshop.security.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,5 +75,38 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged out");
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+        String oldJwt = jwtService.extractJwtFromCookies(request);
+
+        if (oldJwt == null || oldJwt.isEmpty())
+            return ResponseEntity.status(401).body("Missing token");
+
+        String email = jwtService.extractEmail(oldJwt);
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid token payload");
+        }
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(401).body("Invalid user");
+        }
+
+        // Generate new JWT
+        String newJwt = jwtService.generateToken(user);
+
+        // Set new cookie
+        Cookie cookie = new Cookie("jwt", newJwt);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // set true in prod
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("Token refreshed");
     }
 }
