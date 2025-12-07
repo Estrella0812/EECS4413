@@ -3,6 +3,8 @@ package com.eecs.pcshop.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +39,30 @@ public class JwtService {
     }
 
     public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
+        try {
+            return extractClaims(token).getSubject();
+        } catch (JwtException|IllegalArgumentException e) {
+            return null;
+        }
     }
 
-    public boolean isTokenValid(String token, User user) {
-        return extractEmail(token).equals(user.getEmail())
-                && !extractClaims(token).getExpiration().before(new Date());
+    public boolean isTokenValid(String token) {
+        try {
+            return !extractClaims(token).getExpiration().before(new Date());
+        } catch (JwtException|IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String extractJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals("jwt")) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     private Claims extractClaims(String token) {

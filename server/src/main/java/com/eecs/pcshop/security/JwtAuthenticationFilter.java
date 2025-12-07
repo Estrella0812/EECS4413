@@ -37,10 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
 
         // Get JWT from cookie
-        String token = extractJwtFromCookies(request);
-        if (token == null) {
+        String token = jwtService.extractJwtFromCookies(request);
+        if (token == null || !jwtService.isTokenValid(token)) {
             filterChain.doFilter(request, response);
-            return; // no JWT → skip authentication
+            return; // no valid JWT -> skip authentication
         }
 
         // Extract user email from token
@@ -58,12 +58,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             return;
         }
 
-        // Validate JWT
-        if (!jwtService.isTokenValid(token, user)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         // Set authentication in Spring Security context
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(
@@ -74,16 +68,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         // Continue the filter chain
         filterChain.doFilter(request, response);
-    }
-
-    private String extractJwtFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
-
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("jwt")) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
