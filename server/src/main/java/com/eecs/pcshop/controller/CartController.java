@@ -45,5 +45,10 @@ public class CartController {
     public ResponseEntity<Cart> clearCart(@PathVariable Long userId) {
         return ResponseEntity.ok(cartService.clearCart(userId));
     }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<String> handleExceptions(RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
     
 }

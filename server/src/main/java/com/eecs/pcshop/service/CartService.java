@@ -3,7 +3,9 @@ package com.eecs.pcshop.service;
 import com.eecs.pcshop.model.*;
 import com.eecs.pcshop.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class CartService {
     public Cart addItem(Long userId, Long productId, int quantity) {
         Cart cart = getOrCreateCart(userId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         CartItem item = cart.getItems().stream()
             .filter(i -> i.getProduct().getId().equals(productId))
@@ -38,8 +40,14 @@ public class CartService {
             .orElse(null);
 
         if (item != null) {
+            int updatedQuantity = item.getQuantity() + quantity;
+            if (updatedQuantity > item.getProduct().getStock() || updatedQuantity < 1)
+                throw new IllegalArgumentException("Invalid quantity");
             item.setQuantity(item.getQuantity() + quantity);
         } else {
+            if (quantity < 1)
+                throw new IllegalArgumentException("Quantity must be greater than 0");
+
             item = new CartItem();
             item.setCart(cart);
             item.setProduct(product);
