@@ -29,6 +29,8 @@ CREATE TABLE images (
         ON DELETE CASCADE
 );
 
+CREATE INDEX idx_product_main ON images (product_id, is_main);
+
 CREATE TABLE users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
