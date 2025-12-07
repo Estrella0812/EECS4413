@@ -1,5 +1,6 @@
 package com.eecs.pcshop.controller;
 
+import com.eecs.pcshop.model.Cart;
 import com.eecs.pcshop.model.User;
 import com.eecs.pcshop.repository.UserRepository;
 import com.eecs.pcshop.security.JwtService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -26,12 +28,13 @@ public class AuthController {
         if (userRepository.existsByEmail(req.getEmail())) {
             return ResponseEntity.badRequest().body("Email already used");
         }
-
+        Cart cart = new Cart();
         User user = User.builder()
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
+                .cart(cart)
                 .build();
-
+        cart.setUser(user);
         userRepository.save(user);
 
         return ResponseEntity.ok("Registered successfully");
