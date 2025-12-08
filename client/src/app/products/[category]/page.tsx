@@ -1,15 +1,17 @@
 'use client'
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getProducts } from "../lib/products";
-import { useSearchParams } from "next/navigation";
-import { Brands } from "../data/brand";
-import { Categories } from "../data/category";
-import { Product } from "../types/product";
+import { getProducts, getProductsByCategory } from "@/app/lib/products";
+import { useParams, useSearchParams } from "next/navigation";
+import { Brands } from "@/app/data/brand";
+import { Categories } from "@/app/data/category";
+import { Product } from "@/app/types/product";
 
 export default function Products(){
+    const { category } = useParams<{category: string}>();
     const useSearchParamss = useSearchParams();
     const page = useSearchParamss.get("page") || "1";
+
     const [brands, setBrands] = useState<string[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -27,7 +29,7 @@ export default function Products(){
 
     // Fetch all products from api
     useEffect(() => {
-        getProducts().then(setProducts);
+        getProductsByCategory(category).then(setProducts);
     }, []);
 
     console.log(products);
@@ -35,18 +37,13 @@ export default function Products(){
 
     return(
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-4 grid-cols-1 my-18">
+            <section className="text-2xl font-semibold p-2 pl-4 w-full lg:col-span-12">
+                Category: {category}
+            </section>
 
             <section className="lg:col-span-3 flex flex-col items-center gap-x-8 mr-4">
-                <div className="text-2xl font-semibold p-2 pl-4 w-full">Filters</div>
+                <div className="text-xl font-semibold p-2 pl-4 w-full">Filters</div>
                 <div className="w-full grid gap-y-1 divide-y divide-white border-white border-t-1 border-b-1">
-                    <div className="w-full p-4">
-                        <p className="font-bold mb-4">Category</p>
-                        <div className="flex flex-col gap-y-1 mb-4">
-                            {Categories.map((category, index) => (
-                                <Link href={`/products/${category}`} key={index} prefetch={false} className="hover:underline px-4 w-fit">{category}</Link>
-                            ))}
-                        </div>
-                    </div>
                     <div className="w-full p-4">
                         <p className="font-bold mb-4">Brand</p>
                         <div className="flex flex-col gap-y-2">
