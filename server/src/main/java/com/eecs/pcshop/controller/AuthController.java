@@ -59,7 +59,7 @@ public class AuthController {
         cookie.setMaxAge(24 * 60 * 60);
 
         response.addCookie(cookie);
-
+        System.out.println(user.getId());
         return ResponseEntity.ok("Logged in");
     }
 
