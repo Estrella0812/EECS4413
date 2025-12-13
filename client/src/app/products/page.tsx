@@ -1,11 +1,12 @@
 'use client'
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getProducts } from "../lib/products";
+import { getProducts, getProductsByBrand } from "../lib/products";
 import { useSearchParams } from "next/navigation";
 import { Brands } from "../data/brand";
 import { Categories } from "../data/category";
 import { Product } from "../types/product";
+import { Elsie_Swash_Caps } from "next/font/google";
 
 export default function Products(){
     const useSearchParamss = useSearchParams();
@@ -27,8 +28,12 @@ export default function Products(){
 
     // Fetch all products from api
     useEffect(() => {
-        getProducts().then(setProducts);
-    }, []);
+        if(brands.length == 0){
+            getProducts().then(setProducts);
+        }else{
+            getProductsByBrand(brands[0]).then(setProducts);
+        }
+    }, [brands]);
 
     console.log(products);
 

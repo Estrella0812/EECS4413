@@ -1,7 +1,12 @@
+'use client';
 import Link from "next/link";
 import { PurchaseHistoryIcon } from "@/../components/icons/page";
+import { logout } from "../lib/authentication";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "../lib/users";
 
 export default function UserPage(){
+    const [user, setUser] = useState<any>(null);
     const sampleInfo = {
         name: "Estrella Kim",
         email: "estrellakim03@gmail.com",
@@ -12,19 +17,39 @@ export default function UserPage(){
         city: "Toronto",
         postalCode: "A1B 2C3"
     }
+
+    const handleLogOut = async () => {
+        const res = await logout();
+    };
+
+    useEffect(() => {
+        getCurrentUser().then(({ ok, user }) => {
+        if (ok) setUser(user);
+        });
+    }, []);
+
+    console.log(user.role);
+
     return(
         <div className="max-w-7xl mx-auto my-5 min-h-[82vh]">
             <div className="bg-zinc-900 rounded-full w-[150px] h-[150px]"></div>
             <div className="my-4">
                 <h2 className="text-2xl font-bold">{sampleInfo.name}</h2>
-                <p className="text-gray-500">{sampleInfo.email}</p>
+                <p className="text-gray-500">{user.email}</p>
             </div>
 
-            <Link href='/user/order-history' prefetch={false}>
-                <div className="flex items-center gap-2 max-w-fit mb-6 cursor-pointer gradient-bg rounded-full px-4 py-2">
-                    <PurchaseHistoryIcon></PurchaseHistoryIcon>Order History
-                </div>
-            </Link>
+            <div className="flex justify-between">
+                <Link href='/user/order-history' prefetch={false}>
+                    <div className="flex items-center gap-2 max-w-fit mb-6 cursor-pointer gradient-bg rounded-full px-4 py-2">
+                        <PurchaseHistoryIcon></PurchaseHistoryIcon>Order History
+                    </div>
+                </Link>
+                <button onClick={handleLogOut}>
+                    <div className="flex items-center gap-2 max-w-fit mb-6 cursor-pointer bg-red-900 hover:bg-red-800 rounded-full px-4 py-2">
+                        Sign Out
+                    </div>
+                </button>
+            </div>
 
             {/* Table body */}
             <div className="divide-y divide-dotted divide-zinc-700 border border-zinc-700 rounded-lg">
@@ -74,3 +99,16 @@ export default function UserPage(){
         </div>
     );
 }
+
+function decodeJwt(token: string) {
+  const [headerB64, payloadB64] = token.split(".");
+
+  const headerJson = atob(headerB64.replace(/-/g, "+").replace(/_/g, "/"));
+  const payloadJson = atob(payloadB64.replace(/-/g, "+").replace(/_/g, "/"));
+
+  return {
+    header: JSON.parse(headerJson),
+    payload: JSON.parse(payloadJson),
+  };
+}
+

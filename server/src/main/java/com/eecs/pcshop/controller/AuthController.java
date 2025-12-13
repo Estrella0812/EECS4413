@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+@CrossOrigin(origins = "${frontend.origin}")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -52,13 +54,15 @@ public class AuthController {
 
         String jwt = jwtService.generateToken(user);
 
-        Cookie cookie = new Cookie("jwt", jwt);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false); //false for testing, set to true for final app/production
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
+        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+            .httpOnly(true)
+            .secure(true) // true in production with HTTPS
+            .sameSite("None")
+            .path("/")
+            .maxAge(24 * 60 * 60)
+            .build();
 
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", cookie.toString());
         System.out.println(user.getId());
         return ResponseEntity.ok("Logged in");
     }
@@ -66,13 +70,15 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
 
-        Cookie cookie = new Cookie("jwt", "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+            .httpOnly(true)
+            .secure(true)        
+            .sameSite("None")     
+            .path("/")
+            .maxAge(0)             
+            .build();
 
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", cookie.toString());
 
         return ResponseEntity.ok("Logged out");
     }
