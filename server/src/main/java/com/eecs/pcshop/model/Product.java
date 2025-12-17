@@ -1,15 +1,16 @@
 package com.eecs.pcshop.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "products")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
@@ -48,6 +49,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
 }

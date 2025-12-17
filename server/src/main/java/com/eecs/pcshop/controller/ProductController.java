@@ -1,13 +1,22 @@
 package com.eecs.pcshop.controller;
 
+import com.eecs.pcshop.model.Image;
+import com.eecs.pcshop.service.ImageService;
+
+import java.io.File;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import com.eecs.pcshop.model.Product;
 import com.eecs.pcshop.repository.ProductRepository;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "${frontend.origin}")
 @RestController
@@ -16,6 +25,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private final ImageService imageService;
 
     // Get all products
     @GetMapping
@@ -63,9 +73,29 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        //TODO: need ability to upload images
+    @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addProduct(
+            @ModelAttribute Product product,
+            @RequestParam("main") int mainImage,
+            @RequestPart("imageFiles") MultipartFile[] imageFiles
+            ) {
+        List<Image> imageDTOs = new ArrayList<>();
+        for (int i = 0; i < imageFiles.length; i++) {
+            try {
+                File imageFile = imageService.uploadImage(imageFiles[i], product.getName());
+                Image image = Image.builder()
+                        .url(imageFile.getCanonicalPath())
+                        .isMain(i == mainImage)
+                        .build();
+                imageDTOs.add(image);
+            } catch (IOException e) {
+                return ResponseEntity.internalServerError().body(e.getMessage());
+            }
+        }
+        // This must be done before adding to products
+        imageDTOs.forEach(image -> image.setProduct(product));
+
+        product.getImages().addAll(imageDTOs);
         return ResponseEntity.ok(productRepository.save(product));
     }
 }

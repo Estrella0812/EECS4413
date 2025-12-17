@@ -25,6 +25,8 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/images/**").permitAll()
+                .requestMatchers("/api/products/add", "/api/products/delete", "/api/products/edit").authenticated()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/api/stripe/webhook").permitAll()
                 .anyRequest().authenticated()
