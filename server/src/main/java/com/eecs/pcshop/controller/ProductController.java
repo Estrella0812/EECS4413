@@ -1,13 +1,20 @@
 package com.eecs.pcshop.controller;
 
+import com.eecs.pcshop.dto.ProductSearchCriteria;
+import com.eecs.pcshop.dto.ProductSummary;
 import com.eecs.pcshop.model.Image;
 import com.eecs.pcshop.service.ImageService;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.eecs.pcshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import com.eecs.pcshop.model.Product;
 import com.eecs.pcshop.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "${frontend.origin}")
 @RestController
@@ -26,6 +32,7 @@ public class ProductController {
 
     private final ProductRepository productRepository;
     private final ImageService imageService;
+    private final ProductService productService;
 
     // Get all products
     @GetMapping
@@ -70,6 +77,14 @@ public class ProductController {
     @GetMapping("/category/{category}/price/desc")
     public ResponseEntity<List<Product>> getProductsByCategoryPriceDesc(@PathVariable Product.Category category) {
         return ResponseEntity.ok(productRepository.findByCategoryOrderByPriceDesc(category));
+    }
+
+    @GetMapping(path = "/filter", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PagedModel<ProductSummary>> getFilteredProductSummaries(
+            ProductSearchCriteria searchCriteria,
+            @PageableDefault(size = 10) Pageable pageable)
+    {
+        return ResponseEntity.ok(new PagedModel<>(productService.getFilteredSummaries(searchCriteria, pageable)));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

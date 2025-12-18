@@ -51,4 +51,11 @@ public class Product {
     @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
+    public String getMainImageUrl() {
+        return images.stream()
+                .filter(Image::getIsMain)
+                .findFirst()
+                .map(Image::getUrl)
+                .orElse("default.png");
+    }
 }
