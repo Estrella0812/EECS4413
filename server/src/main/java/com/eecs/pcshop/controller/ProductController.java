@@ -79,7 +79,7 @@ public class ProductController {
         return ResponseEntity.ok(productRepository.findByCategoryOrderByPriceDesc(category));
     }
 
-    @GetMapping(path = "/filter")
+    @GetMapping("/filter")
     public ResponseEntity<PagedModel<ProductSummary>> getFilteredProductSummaries(
             ProductSearchCriteria searchCriteria,
             @PageableDefault(size = 10) Pageable pageable)

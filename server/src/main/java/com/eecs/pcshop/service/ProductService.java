@@ -28,6 +28,7 @@ public class ProductService {
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
+                .stock(product.getStock())
                 .mainImageUrl(product.getMainImageUrl())
                 .build();
     }
