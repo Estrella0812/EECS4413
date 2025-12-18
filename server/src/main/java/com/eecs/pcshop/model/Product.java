@@ -56,6 +56,6 @@ public class Product {
                 .filter(Image::getIsMain)
                 .findFirst()
                 .map(Image::getUrl)
-                .orElse("default.png");
+                .orElse("default.jpg");
     }
 }

@@ -27,7 +27,7 @@ services:
     env_file:
       - .env
     volumes:
-      - images:${IMAGE_PATH}
+      - ./product-images/:${IMAGE_PATH}
       - ./src:/app/src
 volumes:
   mysql_volume:
