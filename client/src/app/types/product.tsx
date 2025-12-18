@@ -7,6 +7,7 @@ export interface Product {
     stock: number;
     brand: string;
     images: Image[];
+    mainImageUrl: string;
 }
 
 interface Image{

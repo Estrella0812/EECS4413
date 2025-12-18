@@ -6,6 +6,12 @@ export default async function productsDetail({params}:{params:Promise<{id: strin
 
     const data = await getProductById(productID);
 
+    if(!data){
+        return(
+            <div className="min-h-[90vh] flex justify-center items-center">Failed to load items</div>
+        )
+    }
+
     return(
         <div className="max-w-7xl mx-auto  min-h-screen">
             <section className="grid lg:grid-cols-2 gid-cols-1 gap-10 mt-14">

@@ -34,7 +34,7 @@ export default function LoginPage(){
 
                     <div className="">Dont have an account?</div>
                     <div className="mb-8">
-                        <Link className=" text-pink-500 hover:underline font-bold " href="/user/create-account" prefetch={false}>Creat an account HERE!</Link>
+                        <Link className=" text-pink-500 hover:underline font-bold " href="/auth/create-account" prefetch={false}>Creat an account HERE!</Link>
                     </div>
                 </form>
             </div>

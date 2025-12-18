@@ -29,11 +29,12 @@ export async function login({email, password}: {email: string, password: string}
 }
 
 export async function logout() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: "include",
     });
-    return response.json();
+    return{
+        ok: response.ok,
+        message: response.text(),
+    };
 }

@@ -23,7 +23,7 @@ export default function LoginPage(){
         const res = await register({email, password});
 
         if(res.ok){
-            redirect("/user")
+            redirect("/auth/login")
         }
     }
 
@@ -43,7 +43,7 @@ export default function LoginPage(){
 
                     <div className="">Already have an account?</div>
                     <div className="mb-8">
-                        <Link className=" text-pink-500 hover:underline font-bold " href="/user/login" prefetch={false}>Log in HERE!</Link>
+                        <Link className=" text-pink-500 hover:underline font-bold " href="/auth/login" prefetch={false}>Log in HERE!</Link>
                     </div>
                 </form>
             </div>

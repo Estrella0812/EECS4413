@@ -17,6 +17,11 @@ body {
   /* background: linear-gradient(135deg, #ff66b3, #c44dff, #66ccff, #ff4da6); */
 }
 
+.gradient-bg:hover{
+  background: linear-gradient(145deg, #8638e0af, #7b5be4bb, #be32b0bd, #ff1491ae);
+  /* background: linear-gradient(135deg, #ff66b3, #c44dff, #66ccff, #ff4da6); */
+}
+
 .input{
   background: var(--darker-background);
   color: var(--foreground);
@@ -24,4 +29,19 @@ body {
   border-radius: 0.5rem;
   border: none;
   outline: none;
+}
+
+
+
+/* Input Number Button */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

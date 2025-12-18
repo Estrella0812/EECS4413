@@ -4,6 +4,7 @@ import { PurchaseHistoryIcon } from "@/../components/icons/page";
 import { logout } from "../lib/authentication";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../lib/users";
+import { redirect } from "next/navigation";
 
 export default function UserPage(){
     const [user, setUser] = useState<any>(null);
@@ -20,6 +21,9 @@ export default function UserPage(){
 
     const handleLogOut = async () => {
         const res = await logout();
+        if(res.ok){
+            redirect("/auth/login")
+        }
     };
 
     useEffect(() => {
@@ -28,14 +32,12 @@ export default function UserPage(){
         });
     }, []);
 
-    console.log(user.role);
-
     return(
         <div className="max-w-7xl mx-auto my-5 min-h-[82vh]">
             <div className="bg-zinc-900 rounded-full w-[150px] h-[150px]"></div>
             <div className="my-4">
                 <h2 className="text-2xl font-bold">{sampleInfo.name}</h2>
-                <p className="text-gray-500">{user.email}</p>
+                <p className="text-gray-500">{user?.email || "Loading"}</p>
             </div>
 
             <div className="flex justify-between">
