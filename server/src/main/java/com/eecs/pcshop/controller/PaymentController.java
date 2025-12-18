@@ -25,7 +25,7 @@ public class PaymentController {
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
         try {
             PaymentIntent intent =
-                paymentService.createPaymentIntent(request.getCartId(), request.getCurrency());
+                paymentService.createPaymentIntent(request.getCartId(), "cad");
 
             return ResponseEntity.ok(Map.of("clientSecret", intent.getClientSecret()));
         } catch (Exception e) {
