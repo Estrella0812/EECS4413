@@ -2,21 +2,20 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import { addItemToCart, getProducts, getProductsByCategory } from "@/app/lib/products";
+import { addItemToCart, getProducts, getProductsByCategory, getProductsFilter } from "@/app/lib/products";
 import { useParams, useSearchParams } from "next/navigation";
 import { Brands } from "@/app/data/brand";
 import { Categories } from "@/app/data/category";
-import { Product } from "@/app/types/product";
+import { Page, Product } from "@/app/types/product";
 
 export default function Products(){
     const { category } = useParams<{category: string}>();
     const useSearchParamss = useSearchParams();
     const page = useSearchParamss.get("page") || "1";
-
-    const [user, setUser] = useState<number|null>(null);
-    const [sort, setSort] = useState<"low-high" | "high-low" | "name-asc" | "name-desc" | "none">("none");
-    const [minPrice, setMinPrice] = useState<number|null>(null);
-    const [maxPrice, setMaxPrice] = useState<number|null>(null);
+    const [pageInfo, setPageInfo] = useState<Page|null>(null);
+    const [sort, setSort] = useState<string>("");
+    const [minPrice, setMinPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(10000);
     const [brands, setBrands] = useState<string[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -43,8 +42,12 @@ export default function Products(){
 
     // Fetch all products from api
     useEffect(() => {
-        getProductsByCategory(category).then(setProducts);
-    }, []);
+        getProductsFilter({sort, category, brands, minPrice, maxPrice, page:parseInt(page)-1})
+        .then(result=>{
+                setProducts(result.content);
+                setPageInfo(result.page);
+        });
+    }, [sort, brands, minPrice, maxPrice, page]);
 
 
 
@@ -125,44 +128,53 @@ export default function Products(){
             </section>
 
             {/* Product List */}
-            <section className="lg:col-span-9">
+            <section className="lg:col-span-9 min-h-full flex flex-col justify-between">
                 {/* Sort By */}
-                <div className="p-2 flex items-center justify-end">
-                    <label className="block text-lg text-white mr-2">Sort by</label>
-                    <select
-                        className="bg-white rounded-t-xl px-3 py-2 text-sm focus:outline-none text-zinc-900"
-                        defaultValue="none"
-                    >
-                        <option value="none">default</option>
-                        <option value="low-high">Price: Low → High</option>
-                        <option value="high-low">Price: High → Low</option>
-                        <option value="name-asc">Name: a → z</option>
-                        <option value="name-desc">Name: z → a</option>
-                    </select>
-                </div>
+                <section>
+                    <div className="p-2 flex items-center justify-end">
+                        <label className="block text-lg text-white mr-2">Sort by</label>
+                        <select
+                            onChange={(e) => setSort(e.target.value)}
+                            className="bg-white rounded-t-xl px-3 py-2 text-sm focus:outline-none text-zinc-900"
+                            defaultValue="none"
+                        >
+                            <option value="none">default</option>
+                            <option value="price,asc">Price: Low → High</option>
+                            <option value="price,desc">Price: High → Low</option>
+                            <option value="name,asc">Name: a → z</option>
+                            <option value="name,desc">Name: z → a</option>
+                        </select>
+                    </div>
                 
-                <section className="grid grid-cols-3 gap-4">
-                    {products.map((product, index) => (
-                        <div className="p-4 aspect-square" key={index}>
-                            <Link href={`/productdetail/${product.id}`} prefetch={false}>
-                                <div className="relative w-full h-2/3 mb-4 bg-white shadow-xl rounded-2xl overflow-hidden">
-                                    <Image
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${product.mainImageUrl}`}
-                                        alt={product.name}
-                                        fill
-                                        sizes="(max-width: 768px) 300px, 300px"
-                                        className="object-contain object-center scale-90"
-                                    />
-                                </div>
-                                <p>{product.name}</p>
-                                <p className="text-pink-600">${product.price}</p>
-                            </Link>
-                            <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                                Add to Cart
-                            </button>
-                        </div>
-                    ))}
+                    <div className="grid grid-cols-3 gap-4">
+                        {products.map((product, index) => (
+                            <div className="p-4 aspect-square" key={index}>
+                                <Link href={`/productdetail/${product.id}`} prefetch={false}>
+                                    <div className="relative w-full h-2/3 mb-4 bg-white shadow-xl rounded-2xl overflow-hidden">
+                                        <Image
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${product.mainImageUrl}`}
+                                            alt={product.name}
+                                            fill
+                                            sizes="(max-width: 768px) 300px, 300px"
+                                            className="object-contain object-center scale-90"
+                                        />
+                                    </div>
+                                    <p>{product.name}</p>
+                                    <p className="text-pink-600">${product.price}</p>
+                                </Link>
+                                <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </section>
+
+                <div className="flex justify-center ites-center gap-x-5 mt-10 text-lg">
+                    {parseInt(page) > 1 && <Link href={`/products/${category}?page=${parseInt(page)-1}`} className="text-2xl" prefetch={false}>‹</Link>}
+                    <p>{page}</p>
+                    {pageInfo && pageInfo.totalPages && pageInfo.totalPages > parseInt(page) && <Link href={`/products/${category}?page=${parseInt(page)+1}`} className="text-2xl" prefetch={false}>›</Link>}
+                </div>
             </section>
         </div>
     );

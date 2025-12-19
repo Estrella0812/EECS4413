@@ -2,19 +2,20 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import { addItemToCart, getProducts, getProductsByBrand } from "../lib/products";
+import { addItemToCart, getProducts, getProductsFilter } from "../lib/products";
 import { useSearchParams } from "next/navigation";
 import { Brands } from "../data/brand";
 import { Categories } from "../data/category";
-import { Product } from "../types/product";
+import { Page, Product } from "../types/product";
 
 export default function Products(){
 
-    const useSearchParamss = useSearchParams();
-    const page = useSearchParamss.get("page") || "1";
-    const [sort, setSort] = useState<"low-high" | "high-low" | "name-asc" | "name-desc" | "none">("none");
-    const [minPrice, setMinPrice] = useState<number|null>(null);
-    const [maxPrice, setMaxPrice] = useState<number|null>(null);
+    const params = useSearchParams();
+    const page = params.get("page") || "1";
+    const [pageInfo, setPageInfo] = useState<Page|null>(null);
+    const [sort, setSort] = useState<string>("");
+    const [minPrice, setMinPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(10000);
     const [brands, setBrands] = useState<string[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -41,12 +42,12 @@ export default function Products(){
 
     // Fetch all products from api
     useEffect(() => {
-        if(brands.length == 0){
-            getProducts().then(setProducts);
-        }else{
-            getProductsByBrand(brands[0]).then(setProducts);
-        }
-    }, []);
+        getProductsFilter({sort, brands, minPrice, maxPrice, page:parseInt(page)-1})
+        .then(result=>{
+                setProducts(result.content);
+                setPageInfo(result.page);
+        });
+    }, [sort, brands, minPrice, maxPrice, page]);
 
 
     return(
@@ -72,7 +73,7 @@ export default function Products(){
                             <input
                             type="number"
                             min={0}
-                            value={minPrice||undefined}
+                            value={minPrice||0}
                             onChange={(e) => setMinPrice(parseInt(e.target.value))}
                             className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-pink-500 focus:outline-none"
                             placeholder="$"
@@ -132,59 +133,54 @@ export default function Products(){
             </section>
 
             {/* Product List */}
-            <section className="lg:col-span-9">
-                <div className="p-2 flex items-center justify-end">
-                    <label className="block text-lg text-white mr-2">Sort by</label>
-                    <select
-                        className="bg-white rounded-t-xl px-3 py-2 text-sm focus:outline-none text-zinc-900"
-                        defaultValue="none"
-                    >
-                        <option value="none">default</option>
-                        <option value="low-high">Price: Low → High</option>
-                        <option value="high-low">Price: High → Low</option>
-                        <option value="name-asc">Name: a → z</option>
-                        <option value="name-desc">Name: z → a</option>
-                    </select>
-                </div>
-
-                
-                <section className="grid grid-cols-3 gap-4">
-                    {products.map((product, index) => (
-                        <div className="p-4 aspect-square" key={index}>
-                            <Link href={`/productdetail/${product.id}`} prefetch={false}>
-                                <div className="relative w-full h-2/3 mb-4 bg-white shadow-xl rounded-2xl overflow-hidden">
-                                    <Image
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${product.mainImageUrl}`}
-                                        alt={product.name}
-                                        fill
-                                        sizes="(max-width: 768px) 300px, 300px"
-                                        className="object-contain object-center scale-90"
-                                    />
-                                </div>
-                                <p>{product.name}</p>
-                                <p className="text-pink-600">${product.price}</p>
-                            </Link>
-                            <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                                Add to Cart
-                            </button>
-                        </div>
-                    ))}
-                </section>
-            </section>
-            {/* <section className="lg:col-span-9 grid grid-cols-3 gap-4">
-                {products.map((product, index) => (
-                    <div className="p-4 aspect-square" key={index}>
-                        <Link href={`/productdetail/${product.id}`} prefetch={false}>
-                            <div className="w-full h-2/3 mb-4 bg-zinc-900 rounded-lg"/>
-                            <p>{product.name}</p>
-                            <p className="text-pink-600">${product.price}</p>
-                        </Link>
-                        <button className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                            Add to Cart
-                        </button>
+            <section className="lg:col-span-9 min-h-full flex flex-col justify-between">
+                <section>
+                    <div className="p-2 flex items-center justify-end">
+                        <label className="block text-lg text-white mr-2">Sort by</label>
+                        <select
+                            onChange={(e) => setSort(e.target.value)}
+                            className="bg-white rounded-t-xl px-3 py-2 text-sm focus:outline-none text-zinc-900"
+                            defaultValue="none"
+                        >
+                            <option value="">default</option>
+                            <option value="price,asc">Price: Low → High</option>
+                            <option value="price,desc">Price: High → Low</option>
+                            <option value="name,asc">Name: a → z</option>
+                            <option value="name,desc">Name: z → a</option>
+                        </select>
                     </div>
-                ))}
-            </section> */}
+
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                        {products.map((product, index) => (
+                            <div className="p-4 aspect-square" key={index}>
+                                <Link href={`/productdetail/${product.id}`} prefetch={false}>
+                                    <div className="relative w-full h-2/3 mb-4 bg-white shadow-xl rounded-2xl overflow-hidden">
+                                        <Image
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${product.mainImageUrl}`}
+                                            alt={product.name}
+                                            fill
+                                            sizes="(max-width: 768px) 300px, 300px"
+                                            className="object-contain object-center scale-90"
+                                        />
+                                    </div>
+                                    <p>{product.name}</p>
+                                    <p className="text-pink-600">${product.price}</p>
+                                </Link>
+                                <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                <div className="flex justify-center ites-center gap-x-5 mt-10 text-lg">
+                    {parseInt(page) > 1 && <Link href={`/products?page=${parseInt(page)-1}`} className="text-2xl" prefetch={false}>‹</Link>}
+                    <p>{page}</p>
+                    {pageInfo && pageInfo.totalPages && pageInfo.totalPages > parseInt(page) && <Link href={`/products?page=${parseInt(page)+1}`} className="text-2xl" prefetch={false}>›</Link>}
+                </div>
+            </section>
         </div>
     );
 }

@@ -1,9 +1,10 @@
 import { Cart } from "../types/cart";
-import { Product } from "../types/product";
+import { Product, ProductResult } from "../types/product";
 
 export async function getProducts(){
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
         method: 'GET',
+        cache: "no-store",
         headers: {
             'Content-Type': 'application/json',
         },
@@ -14,6 +15,7 @@ export async function getProducts(){
 export async function getProductById(id: number){
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`, {
         method: 'GET',
+        cache: "no-store",
         headers: {
             'Content-Type': 'application/json',
         },
@@ -24,6 +26,7 @@ export async function getProductById(id: number){
 export async function getProductsByCategory(category: string){
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/category/${category}`, {
         method: 'GET',
+        cache: "no-store",
         headers: {
             'Content-Type': 'application/json',
         },
@@ -34,6 +37,32 @@ export async function getProductsByCategory(category: string){
 export async function getProductsByBrand(brand: string): Promise<Product[]> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/brand/${brand}`, {
         method: 'GET',
+        cache: "no-store",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    return response.json();
+}
+
+export async function getProductsFilter(
+    {query="", sort="", category="", brands=[], minPrice, maxPrice, inStock=true, page=0}:
+    {query?: string, sort?: string, category?: string, brands?: string[], minPrice?: number, maxPrice?: number, inStock?: boolean, page?: number}
+): Promise<ProductResult>{
+    const SIZE = 9
+    // Build Query
+    var q = "?"
+    if(brands.length > 0){
+        for(const b of brands){
+            q += `brands=${b}&`
+        }
+    }
+    q += `query=${query}&sort=${sort}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=${inStock}&page=${page}&size=${SIZE}`;
+
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/filter${q}`, {
+        method: 'GET',
+        cache: "no-store",
         headers: {
             'Content-Type': 'application/json',
         },
