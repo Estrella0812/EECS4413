@@ -46,10 +46,9 @@ export async function getProductsByBrand(brand: string): Promise<Product[]> {
 }
 
 export async function getProductsFilter(
-    {query="", sort="", category="", brands=[], minPrice, maxPrice, inStock=true, page=0}:
-    {query?: string, sort?: string, category?: string, brands?: string[], minPrice?: number, maxPrice?: number, inStock?: boolean, page?: number}
+    {query="", sort="", category="", brands=[], minPrice=0, maxPrice=10000, inStock=true, page=0, size=9}:
+    {query?: string, sort?: string, category?: string, brands?: string[], minPrice?: number, maxPrice?: number, inStock?: boolean, page?: number, size?: number}
 ): Promise<ProductResult>{
-    const SIZE = 9
     // Build Query
     var q = "?"
     if(brands.length > 0){
@@ -57,8 +56,7 @@ export async function getProductsFilter(
             q += `brands=${b}&`
         }
     }
-    q += `query=${query}&sort=${sort}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=${inStock}&page=${page}&size=${SIZE}`;
-
+    q += `query=${query}&sort=${sort}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=${inStock}&page=${page}&size=${size}`;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/filter${q}`, {
         method: 'GET',
