@@ -51,7 +51,7 @@ export default function InventoryPage(){
             <div className="grid grid-cols-2 gap-4">
                 {products?.map((item) => (
                         <div key={item.id} className="grid grid-cols-3 gap-4 bg-zinc-900 rounded-lg p-4">
-                            <div className="relative bg-white h-[200px]">
+                            <div className="relative bg-white h-[200px] rounded-xl">
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${item.mainImageUrl}`}
                                     alt={item.name}

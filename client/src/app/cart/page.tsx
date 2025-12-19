@@ -1,5 +1,6 @@
 'use client';
 import Link from "next/link";
+import Image from "next/image";
 import { useGlobalCart } from "@/context/CartContext";
 
 const TAX = 0.13;
@@ -7,6 +8,7 @@ const TAX = 0.13;
 export default function CartPage(){
 
     const { cart, isLoaded, updateItem, removeItem } = useGlobalCart();
+    console.log(cart);
 
     if (!isLoaded) return <div>Loading...</div>;
 
@@ -21,7 +23,15 @@ export default function CartPage(){
                     :
                     (cart?.items.map((item, idx) => (
                         <div key={idx} className="grid grid-cols-3 gap-4 bg-zinc-900 rounded-lg p-4">
-                            <div className="bg-zinc-200 h-[200px]">image</div>
+                            <div className="relative bg-white h-[200px] rounded-xl">
+                                <Image
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/api/images/${item.product.mainImageUrl}`}
+                                    alt="main image"
+                                    fill
+                                    sizes="(max-width: 768px) 300px, 600px"
+                                    className="object-contain object-center rounded-xl scale-90"
+                                />
+                            </div>
                             <div className="col-span-2 flex flex-col justify-center">
                                 <h2 className="text-lg font-semibold">{item.product.name}</h2>
                                 <p className="text-gray-500">Price: ${item.product.price}</p>
