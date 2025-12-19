@@ -1,6 +1,11 @@
 package com.eecs.pcshop.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,5 +38,12 @@ public class UserController {
                 .orElseThrow();
 
         return ResponseEntity.ok(UserDto.from(user));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<PagedModel<User>> getAllOrders(
+            @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(new PagedModel<>(userRepository.findAll(pageable)));
     }
 }
