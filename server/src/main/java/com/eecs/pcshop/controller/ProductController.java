@@ -15,11 +15,13 @@ import com.eecs.pcshop.repository.ProductRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +87,20 @@ public class ProductController {
             @PageableDefault(size = 10) Pageable pageable)
     {
         return ResponseEntity.ok(new PagedModel<>(productService.getFilteredSummaries(searchCriteria, pageable)));
+    }
+
+    @PutMapping("/stock/{id}")
+    public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestBody Integer newStock) {
+        if (newStock < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stock cannot be negative");
+        }
+        return productRepository.findById(id)
+                .map(product -> {
+                    product.setStock(newStock);
+                    Product updatedProduct = productRepository.save(product);
+                    return ResponseEntity.ok(updatedProduct);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
