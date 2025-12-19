@@ -1,13 +1,19 @@
+export interface ProductResult{
+    content: Product[],
+    page: Page
+}
+
 export interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    stock: number;
-    brand: string;
-    images: Image[];
-    mainImageUrl: string;
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  mainImageUrl: string;
+
+  description?: string;
+  category?: string;
+  brand?: string;
+  images?: Image[];
 }
 
 export interface Image{
@@ -16,4 +22,11 @@ export interface Image{
     url: string;
     altText: string;
     product: Product;
+}
+
+export interface Page{
+    size?: number,
+    number: number,
+    totalElements?: number,
+    totalPages?: number,
 }

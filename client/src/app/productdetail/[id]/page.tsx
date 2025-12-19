@@ -7,7 +7,7 @@ export default async function productsDetail({params}:{params:Promise<{id: strin
     const data = await getProductById(Number(id));
 
     return (
-        <div className="w-full h-auto"> 
+        <div className="w-full min-h-[83vh] flex items-center"> 
             
             <section className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col lg:flex-row gap-8 lg:gap-16 py-8 lg:py-12 items-start">
                 

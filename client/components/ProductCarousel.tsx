@@ -33,7 +33,7 @@ export default function ProductCarousel({ images }: { images: Image[] }) {
             <div
                 ref={scrollRef}
                 onScroll={handleScroll}
-                className="flex w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide bg-zinc-900 aspect-[5/4] rounded-2xl"
+                className="flex w-full overflow-x-hidden snap-x snap-mandatory scrollbar-hide bg-zinc-900 aspect-[5/4] rounded-2xl"
             >
                 {images.map((image, index) => (
                     <div
