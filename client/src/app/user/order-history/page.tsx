@@ -1,13 +1,11 @@
 'use client';
 
+import { Product } from "@/app/types/product";
 import { useEffect, useState } from "react";
 
 type OrderItem = {
   quantity: number;
-  price: number;
-  product: {
-    name: string;
-  };
+  product: Product
 };
 
 type Order = {
@@ -70,7 +68,7 @@ export default function PurchaseHistory() {
                 <span className="col-span-2">{item.product.name}</span>
                 <span className="text-center">x{item.quantity}</span>
                 <span className="text-right">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(item.product.price * item.quantity).toFixed(2)}
                 </span>
                 </div>
             ))}
