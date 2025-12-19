@@ -28,11 +28,6 @@ public class OrderService {
 
     public void createOrderFromPayment(PaymentIntent intent) {
 
-        // Prevent duplicate webhook processing
-        /* if (orderRepository.existsByStripePaymentIntentId(intent.getId())) {
-            return;
-        } */
-        System.out.println("Payment1");
         Long cartId = Long.parseLong(intent.getMetadata().get("cartId"));
         Long userId = Long.parseLong(intent.getMetadata().get("userId"));
 
@@ -47,7 +42,6 @@ public class OrderService {
         order.setUser(user);
         order.setStripePaymentIntentId(intent.getId());
 
-        System.out.println("running6");
         List<OrderItem> items = cart.getItems().stream().map(ci -> {
 
             Product product = ci.getProduct();
