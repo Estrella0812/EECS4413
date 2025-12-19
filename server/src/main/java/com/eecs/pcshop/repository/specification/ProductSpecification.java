@@ -13,7 +13,6 @@ public class ProductSpecification {
 
         return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.equal(root.get("category"), searchCriteria.getCategory()));
 
             if (query != null && query.getResultType() != Long.class) {
                 // an optimization
@@ -31,7 +30,9 @@ public class ProductSpecification {
                     ));
                 }
             }
-
+            if (searchCriteria.getCategory() != null) {
+                predicates.add(cb.equal(root.get("category"), searchCriteria.getCategory()));
+            }
             if (searchCriteria.getMinPrice() != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("price"), searchCriteria.getMinPrice()));
             }
