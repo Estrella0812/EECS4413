@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import { addItemToCart, getProducts, getProductsFilter } from "../lib/products";
+import { getProductsFilter } from "../lib/products";
 import { useSearchParams } from "next/navigation";
 import { Brands } from "../data/brand";
 import { Categories } from "../data/category";
@@ -30,15 +30,6 @@ export default function Products(){
             }
         });
     };
-
-    const handleAddToCart = async (productID: number) => {
-        try{
-            const res = await addItemToCart(productID, 1);
-        }catch(err){
-            console.log("error while adding item to cart")
-        }
-
-    }
 
     // Fetch all products from api
     useEffect(() => {
@@ -167,9 +158,6 @@ export default function Products(){
                                     <p>{product.name}</p>
                                     <p className="text-pink-600">${product.price}</p>
                                 </Link>
-                                <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                                    Add to Cart
-                                </button>
                             </div>
                         ))}
                     </div>

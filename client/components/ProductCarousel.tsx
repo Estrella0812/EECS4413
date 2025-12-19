@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { Image } from '@/app/types/product'
 
 export default function ProductCarousel({ images }: { images: Image[] }) {
+    console.log(images[0].url)
     const scrollRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);

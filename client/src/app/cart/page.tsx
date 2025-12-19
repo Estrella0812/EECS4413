@@ -1,71 +1,14 @@
 'use client';
 import Link from "next/link";
-import { delItemFromCart, getCart, updateItemToCart } from "../lib/products";
-import { useEffect, useState } from "react";
-import { Cart } from "@/app/types/cart"
+import { useGlobalCart } from "@/context/CartContext";
 
 const TAX = 0.13;
 
 export default function CartPage(){
-    const items = [ 
-        { id: 1, name: "Wireless Headphones", price: 129.99, qty: 1 },
-        { id: 2, name: "USB-C Charging Cable", price: 19.5, qty: 2 },
-        { id: 3, name: "Laptop Stand", price: 49.99, qty: 1 },
-        { id: 4, name: "Mouse", price: 99.99, qty: 3 },
-    ]; // Replace with actual cart items
 
-    const [cart, setCart] = useState<Cart | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { cart, isLoaded, updateItem, removeItem } = useGlobalCart();
 
-    useEffect(() => {
-        getCart()
-        .then(setCart)
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    }, []);
-
-    const handleChangeQty = async (productID: number, qty: number) =>{
-
-        try {
-            await updateItemToCart(productID, qty);
-            updateItemQuantityLocal(productID, qty);
-        } catch (err) {
-            console.error("Error on handling qty change");
-        }
-    }
-
-    const handleRemoveItem = async (productID: number) =>{
-        try {
-            await delItemFromCart(productID);
-            setCart(prev => {
-                if (!prev) return prev;
-                return {
-                    ...prev,
-                    items: prev.items.filter(item => item.id !== productID),
-                };
-            });
-        } catch (err) {
-            console.error("error on removing item");
-        }
-    }
-
-
-    const updateItemQuantityLocal = (itemId: number, newQty: number) => {
-        setCart(prev => {
-            if (!prev) return prev;
-
-            return {
-            ...prev,
-            items: prev.items.map(item =>
-                item.id === itemId
-                ? { ...item, quantity: newQty }
-                : item
-            ),
-            };
-        });
-    };
-
-    if (loading) return <div>Loading...</div>;
+    if (!isLoaded) return <div>Loading...</div>;
 
     return(
         <div className="max-w-7xl my-10 mx-auto min-h-[75vh]">
@@ -76,22 +19,22 @@ export default function CartPage(){
                         <h3>It seems like your cart is empty !</h3>
                     </div>)
                     :
-                    (cart?.items.map((item) => (
-                        <div key={item.id} className="grid grid-cols-3 gap-4 bg-zinc-900 rounded-lg p-4">
+                    (cart?.items.map((item, idx) => (
+                        <div key={idx} className="grid grid-cols-3 gap-4 bg-zinc-900 rounded-lg p-4">
                             <div className="bg-zinc-200 h-[200px]">image</div>
                             <div className="col-span-2 flex flex-col justify-center">
                                 <h2 className="text-lg font-semibold">{item.product.name}</h2>
                                 <p className="text-gray-500">Price: ${item.product.price}</p>
                                 <div className="flex">
-                                    <button onClick={()=>handleChangeQty(item.product.id, item.quantity-1)} disabled={item.quantity <= 1} 
+                                    <button onClick={()=>updateItem(item.product, item.quantity-1)} disabled={item.quantity <= 1} 
                                         className={`px-3 py-2 leading-none cursor-pointer font-bold ${item.quantity <= 1? "text-zinc-100/20": "text-white hover:text-gray-200"}`}>-</button>
                                     <div className="w-10 flex items-center disabled:opacity-50 justify-center">
                                         <p className="">{item.quantity}</p>
                                     </div>
-                                    <button onClick={()=>handleChangeQty(item.product.id, item.quantity+1)} className="px-3 py-2 leading-none disabled:opacity-50 cursor-pointer">+</button>
+                                    <button onClick={()=>updateItem(item.product, item.quantity+1)} className="px-3 py-2 leading-none disabled:opacity-50 cursor-pointer">+</button>
                                 </div>
                                 <button
-                                    onClick={()=>handleRemoveItem(item.product.id)}
+                                    onClick={()=>removeItem(item.product)}
                                     className="rounded hover:bg-zinc-200 hover:text-zinc-900 max-w-[40px] p-2 mt-4 cursor-pointer text-pink-500"
                                     title={`Remove ${item.product.name}`}
                                 >
