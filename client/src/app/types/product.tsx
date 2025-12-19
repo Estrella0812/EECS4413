@@ -10,7 +10,7 @@ export interface Product {
     mainImageUrl: string;
 }
 
-interface Image{
+export interface Image{
     id: number;
     isMain: boolean;
     url: string;

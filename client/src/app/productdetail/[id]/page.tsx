@@ -1,28 +1,44 @@
 import { getProductById } from "@/app/lib/products";
+import ProductCarousel from "../../../../components/ProductCarousel";
+import CartAction from "../../../../components/CartAction";
 
 export default async function productsDetail({params}:{params:Promise<{id: string}>}){
-    const resolvedParams = await params;
-    const productID = Number(resolvedParams.id)
+    const { id } = await params;
+    const data = await getProductById(Number(id));
 
-    const data = await getProductById(productID);
+    return (
+        <div className="w-full h-auto"> 
+            
+            <section className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col lg:flex-row gap-8 lg:gap-16 py-8 lg:py-12 items-start">
+                
+                <div className="w-full lg:w-1/2 lg:sticky lg:top-24">
+                    <ProductCarousel images={data.images} />
+                </div>
 
-    if(!data){
-        return(
-            <div className="min-h-[90vh] flex justify-center items-center">Failed to load items</div>
-        )
-    }
+                <div className="w-full lg:w-1/2 flex flex-col space-y-6 text-left">
+                    <div>
+                        <span className="text-blue-500 font-semibold uppercase tracking-wider text-sm">
+                            {data.brand}: {data.category}
+                        </span>
+                        <h1 className="text-3xl lg:text-4xl font-extrabold text-white mt-2">
+                            {data.name}
+                        </h1>
+                    </div>
 
-    return(
-        <div className="max-w-7xl mx-auto  min-h-screen">
-            <section className="grid lg:grid-cols-2 gid-cols-1 gap-10 mt-14">
-                <div className="aspect-[5/4] w-full bg-zinc-900"></div>
-                <div className="flex flex-col justify-center gap-y-2">
-                    <h3 className="text-xl font-bold">{data.name}</h3>
-                    <p>{data.description}</p>
-                    <p>${data.price}</p>
-                    <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 max-w-[200px] rounded-full gradient-bg">
-                        Add to Cart
-                    </button>
+                    <p className="text-zinc-400 leading-relaxed text-lg">
+                        {data.description}
+                    </p>
+
+                    <div className="py-6">
+                        <p className="text-3xl font-bold">${data.price.toFixed(2)}</p>
+                        <p className={`text-sm mt-1 ${data.stock > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {data.stock > 0 ? `In Stock (${data.stock})` : 'Out of Stock'}
+                        </p>
+                    </div>
+
+                    <hr className="border-zinc-800" />
+                    
+                    <CartAction stock={data.stock} productId={data.id}/>
                 </div>
             </section>
         </div>
