@@ -11,7 +11,7 @@ export async function modifyStock(pID: number, qty: number){
 }
 
 export async function fetchAllOrders(page: number){
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/all?${page}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/all?page=${page}`, {
         method: 'GET',
         credentials: "include",
         cache: "no-store",
@@ -23,7 +23,7 @@ export async function fetchAllOrders(page: number){
 }
 
 export async function fetchAllUsers(page: number){
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/all?${page}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/all?page=${page}`, {
         method: 'GET',
         credentials: "include",
         cache: "no-store",

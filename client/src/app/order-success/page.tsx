@@ -33,7 +33,7 @@ export default function OrderSuccess() {
 
   if (loading) {
     return (
-      <div className="min-h-[75vh] flex items-center justify-center text-gray-400">
+      <div className="min-h-[85vh] flex items-center justify-center text-gray-400">
         Loading order details...
       </div>
     );
@@ -41,7 +41,7 @@ export default function OrderSuccess() {
 
   if (error || !order) {
     return (
-      <div className="min-h-[75vh] flex items-center justify-center text-red-400">
+      <div className="min-h-[85vh] flex items-center justify-center text-red-400">
         {error ?? "Unable to load order"}
       </div>
     );
@@ -51,7 +51,7 @@ export default function OrderSuccess() {
   const subtotal = order.total - tax;
 
   return (
-    <div className="max-w-3xl mx-auto min-h-[75vh] flex items-center justify-center px-4">
+    <div className="max-w-3xl mx-auto min-h-[85vh] flex items-center justify-center px-4">
       <div className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-8">
 
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-900/30 text-green-400 text-3xl">

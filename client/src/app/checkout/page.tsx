@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { userBillingData } from "@/app/data/address"
 import { getCart } from "@/app/lib/products";
 import { createPayment } from "@/app/lib/payments";
 
@@ -57,12 +58,12 @@ export default function Checkout(){
                     <div className="grid grid-cols-1 gap-4 bg-zinc-900 rounded-lg p-4">
                         <h2 className="text-2xl font-bold mb-4">Shipping Address</h2>
                         <form className="flex flex-col gap-4">
-                            <input type="text" placeholder="Full Name" className="input"/>
-                            <input type="text" placeholder="Address Line 1" className="input"/>
-                            <input type="text" placeholder="City" className="input"/>
-                            <input type="text" placeholder="Province" className="input"/>
-                            <input type="text" placeholder="Postal Code" className="input"/>
-                            <input type="text" placeholder="Country" className="input"/>
+                            <input type="text" placeholder="Full Name" className="input" value={userBillingData.fullName}/>
+                            <input type="text" placeholder="Address Line 1" className="input" value={userBillingData.address}/>
+                            <input type="text" placeholder="City" className="input" value={userBillingData.city}/>
+                            <input type="text" placeholder="Province" className="input" value={userBillingData.province}/>
+                            <input type="text" placeholder="Postal Code" className="input" value={userBillingData.postal}/>
+                            <input type="text" placeholder="Country" className="input" value={userBillingData.country}/>
                         </form>
                     </div>
 

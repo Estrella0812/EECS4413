@@ -78,9 +78,14 @@ export default function CartPage(){
                                 Go Shopping
                             </Link> 
                         ):(
-                            <Link href="/checkout" prefetch={false} className="mt-4 px-4 py-2 text-white max-w-full rounded-full gradient-bg text-center cursor-pointer">
-                                Proceed to Checkout
-                            </Link>
+                            <>
+                                <Link href="/checkout" prefetch={false} className="mt-4 px-4 py-2 text-white max-w-full rounded-full gradient-bg text-center cursor-pointer">
+                                    Proceed to Checkout
+                                </Link>
+                                <Link href="/products" prefetch={false} className="mt-4 px-4 py-2 text-white max-w-full rounded-full bg-zinc-600 text-center cursor-pointer">
+                                    Go Back Shopping
+                                </Link> 
+                            </>
                         )}
                     </div>
                 </div>
