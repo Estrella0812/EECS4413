@@ -1,9 +1,12 @@
 package com.eecs.pcshop.controller;
 
 import com.eecs.pcshop.model.Cart;
+import com.eecs.pcshop.model.User;
 import com.eecs.pcshop.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "${frontend.origin}")
@@ -14,42 +17,44 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Cart> getCart(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartService.getOrCreateCart(userId));
+    @GetMapping
+    public ResponseEntity<Cart> getCart(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(cartService.getOrCreateCart(user.getId()));
     }
 
-    @PostMapping("/{userId}/add")
+    @PostMapping("/add")
     public ResponseEntity<Cart> addItem(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal User user,
             @RequestParam Long productId,
             @RequestParam int quantity) {
-        return ResponseEntity.ok(cartService.addItem(userId, productId, quantity));
+        return ResponseEntity.ok(
+                cartService.addItem(user.getId(), productId, quantity)
+        );
     }
 
-    @PutMapping("/{userId}/update")
+    @PutMapping("/update")
     public ResponseEntity<Cart> updateQuantity(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal User user,
             @RequestParam Long productId,
             @RequestParam int quantity) {
-        return ResponseEntity.ok(cartService.updateQuantity(userId, productId, quantity));
+
+        return ResponseEntity.ok(
+                cartService.updateQuantity(user.getId(), productId, quantity)
+        );
     }
 
-    @DeleteMapping("/{userId}/remove")
+    @DeleteMapping("/remove")
     public ResponseEntity<Cart> removeItem(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal User user,
             @RequestParam Long productId) {
-        return ResponseEntity.ok(cartService.removeItem(userId, productId));
+
+        return ResponseEntity.ok(
+                cartService.removeItem(user.getId(), productId)
+        );
     }
 
-    @DeleteMapping("/{userId}/clear")
-    public ResponseEntity<Cart> clearCart(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartService.clearCart(userId));
+    @DeleteMapping("/clear")
+    public ResponseEntity<Cart> clearCart(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(cartService.clearCart(user.getId()));
     }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<String> handleExceptions(RuntimeException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-    
 }

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import { getProducts, getProductsByCategory } from "@/app/lib/products";
+import { addItemToCart, getProducts, getProductsByCategory } from "@/app/lib/products";
 import { useParams, useSearchParams } from "next/navigation";
 import { Brands } from "@/app/data/brand";
 import { Categories } from "@/app/data/category";
@@ -13,6 +13,7 @@ export default function Products(){
     const useSearchParamss = useSearchParams();
     const page = useSearchParamss.get("page") || "1";
 
+    const [user, setUser] = useState<number|null>(null);
     const [sort, setSort] = useState<"low-high" | "high-low" | "name-asc" | "name-desc" | "none">("none");
     const [minPrice, setMinPrice] = useState<number|null>(null);
     const [maxPrice, setMaxPrice] = useState<number|null>(null);
@@ -31,12 +32,20 @@ export default function Products(){
         });
     };
 
+    const handleAddToCart = async (productID: number) => {
+        try{
+            const res = await addItemToCart(productID, 1);
+        }catch(err){
+            console.log("error while adding item to cart")
+        }
+
+    }
+
     // Fetch all products from api
     useEffect(() => {
         getProductsByCategory(category).then(setProducts);
     }, []);
 
-    console.log(products);
 
 
     return(
@@ -148,7 +157,7 @@ export default function Products(){
                                 <p>{product.name}</p>
                                 <p className="text-pink-600">${product.price}</p>
                             </Link>
-                            <button className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
+                            <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
                                 Add to Cart
                             </button>
                         </div>

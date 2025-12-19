@@ -28,7 +28,7 @@ export default function UserPage(){
 
     useEffect(() => {
         getCurrentUser().then(({ ok, user }) => {
-        if (ok) setUser(user);
+            if (ok) setUser(user);
         });
     }, []);
 
