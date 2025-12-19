@@ -3,6 +3,7 @@ package com.eecs.pcshop.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +26,12 @@ public class PaymentController {
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest request) {
         try {
             PaymentIntent intent =
-                paymentService.createPaymentIntent(request.getCartId(), "cad");
+                paymentService.createPaymentIntent(request.getAmount(), request.getCurrency());
 
             return ResponseEntity.ok(Map.of("clientSecret", intent.getClientSecret()));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Payment creation failed");
         }
     }
 }

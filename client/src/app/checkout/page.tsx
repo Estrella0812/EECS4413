@@ -1,6 +1,13 @@
-import Link from "next/link";
+'use client';
+
+import { useState } from "react";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 
 export default function Checkout(){
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const items = [ 
         { id: 1, name: "Wireless Headphones", price: 129.99, qty: 1 },
         { id: 2, name: "USB-C Charging Cable", price: 19.5, qty: 2 },
@@ -8,8 +15,47 @@ export default function Checkout(){
         { id: 4, name: "Mouse", price: 99.99, qty: 3 },
     ];
 
+    const handlePayment = async () => {
+    if (!stripe || !elements) return;
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const res = await fetch("http://localhost:8080/api/payments/create", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                amount: total,
+                currency: "cad",
+                }),
+            });
+
+            if (!res.ok) throw new Error("Failed to create payment");
+
+            const { clientSecret } = await res.json();
+
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardElement)!,
+                },
+            });
+
+            if (result.error) {
+                setError(result.error.message || "Payment failed");
+            } else if (result.paymentIntent?.status === "succeeded") {
+                window.location.href = "/user/order-history"; // placeholder for success screen
+            }
+        } catch (err: any) {
+            setError(err.message);
+        }
+
+        setLoading(false);
+    };
+    
     var subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
-    var tax = subtotal * 0.13;
+    var tax = Math.round((subtotal * 0.13 * 100) / 100);
     var total = subtotal + tax;
     return(
         <div className="max-w-7xl mt-4 mb-10 mx-auto min-h-[75vh]">
@@ -32,14 +78,22 @@ export default function Checkout(){
                     {/* Payment */}
                     <div className="grid grid-cols-1 gap-4 bg-zinc-900 rounded-lg p-4">
                         <h2 className="text-2xl font-bold mb-4">Payment Information</h2>
-                        <form className="flex flex-col gap-4">
-                            <input type="text" placeholder="Cardholder Name" className="input"/>
-                            <input type="text" placeholder="Card Number" className="input"/>
-                            <div className="flex gap-4">
-                                <input type="text" placeholder="Expiry Date (MM/YY)" className="input"/>
-                                <input type="text" placeholder="CVV" className="input"/>
-                            </div>
-                        </form>
+                        <div className="bg-zinc-800 rounded p-4">
+                            <CardElement
+                                options={{
+                                    style: {
+                                        base: {
+                                        fontSize: "16px",
+                                        color: "#fff",
+                                        "::placeholder": { color: "#a1a1aa" },
+                                        },
+                                    },
+                                }}
+                            />
+                        </div>
+                        {error && (
+                        <p className="text-red-400 mt-3 text-sm">{error}</p>
+                        )}
                     </div>
 
                     {/* Item List */}
@@ -74,9 +128,13 @@ export default function Checkout(){
                 {/* Place */}
                 <div className="col-span-4 bg-zinc-900 rounded-lg p-4 h-fit">
                     <div className="flex flex-col">
-                        <Link href="/" prefetch={false} className="my-4 px-4 py-2 text-white max-w-full rounded-full gradient-bg text-center cursor-pointer">
-                            Place Your Order
-                        </Link>
+                        <button
+                            onClick={handlePayment}
+                            disabled={!stripe || loading}
+                            className="w-full my-4 px-4 py-2 rounded-full gradient-bg text-white disabled:opacity-50"
+                        >
+                            {loading ? "Processing..." : "Place Your Order"}
+                        </button>
                         <hr></hr>
                         <div className="flex justify-between my-4">
                             <p>Subtotal</p>

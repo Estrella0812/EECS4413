@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class PaymentRequest {
-    private Long cartId;     // Which cart is being checked out
+    private long amount;
+    private String currency;
 }
