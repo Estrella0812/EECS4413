@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.eecs.pcshop.model.Cart;
+import com.eecs.pcshop.repository.CartRepository;
 import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 
@@ -19,14 +21,18 @@ public class PaymentService {
     @Value("${stripe.secret-key}")
     private String secretKey;
 
+    private final CartRepository cartRepository;
+
     @PostConstruct
     public void init() {
         Stripe.apiKey = secretKey;
     }
 
-    public PaymentIntent createPaymentIntent(double total, String currency) throws Exception {
+    public PaymentIntent createPaymentIntent(long cartId, String currency) throws Exception {
 
-        long amount = (long) (total * 100); // convert to cents for Stripe
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        long amount = (long) (cart.getTotal() * 100); // convert to cents for Stripe
 
         Map<String, Object> paymentMethodConfig = new HashMap<>();
         paymentMethodConfig.put("enabled", true);
@@ -36,6 +42,10 @@ public class PaymentService {
         params.put("amount", amount);
         params.put("currency", currency);
         params.put("automatic_payment_methods", paymentMethodConfig);
+        params.put("metadata", Map.of(
+            "cartId", cart.getId().toString(),
+            "userId", String.valueOf(cart.getUser().getId())
+        ));
 
         return PaymentIntent.create(params);
 

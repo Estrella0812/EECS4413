@@ -2,50 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const sampleOrders = [
-  {
-    id: 101,
-    createdAt: "2025-03-12T14:23:00",
-    total: 359.0,
-    items: [
-      {
-        quantity: 1,
-        price: 359.0,
-        product: { name: "RTX 4070 Graphics Card" },
-      },
-    ],
-  },
-  {
-    id: 102,
-    createdAt: "2025-03-09T09:45:00",
-    total: 1248.97,
-    items: [
-      {
-        quantity: 1,
-        price: 899.99,
-        product: { name: "Ryzen 9 7900X CPU" },
-      },
-      {
-        quantity: 2,
-        price: 174.49,
-        product: { name: "32GB DDR5 RAM Kit" },
-      },
-    ],
-  },
-  {
-    id: 103,
-    createdAt: "2025-02-27T18:12:00",
-    total: 219.98,
-    items: [
-      {
-        quantity: 2,
-        price: 109.99,
-        product: { name: "1TB NVMe SSD" },
-      },
-    ],
-  },
-];
-
 type OrderItem = {
   quantity: number;
   price: number;
@@ -65,21 +21,21 @@ export default function PurchaseHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /* useEffect(() => {
-    fetch("http://localhost:8080/api/orders", {
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, {
       credentials: "include",
     })
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) {
+            throw new Error("Failed to fetch orders");
+        }
+
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+      })
       .then(data => setOrders(data))
       .finally(() => setLoading(false));
-  }, []); actual code*/
-
-    useEffect(() => {
-        setTimeout(() => {
-            setOrders(sampleOrders);
-            setLoading(false);
-        }, 500);
-    }, []);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto my-5 min-h-[82vh]">

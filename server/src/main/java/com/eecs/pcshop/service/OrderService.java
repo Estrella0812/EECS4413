@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import com.eecs.pcshop.model.Cart;
 import com.eecs.pcshop.model.Order;
 import com.eecs.pcshop.model.OrderItem;
+import com.eecs.pcshop.model.Product;
 import com.eecs.pcshop.model.User;
 import com.eecs.pcshop.repository.CartRepository;
 import com.eecs.pcshop.repository.OrderRepository;
+import com.eecs.pcshop.repository.ProductRepository;
 import com.eecs.pcshop.repository.UserRepository;
 import com.stripe.model.PaymentIntent;
 
@@ -22,14 +24,15 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public void createOrderFromPayment(PaymentIntent intent) {
 
         // Prevent duplicate webhook processing
-        if (orderRepository.existsByStripePaymentIntentId(intent.getId())) {
+        /* if (orderRepository.existsByStripePaymentIntentId(intent.getId())) {
             return;
-        }
-
+        } */
+        System.out.println("Payment1");
         Long cartId = Long.parseLong(intent.getMetadata().get("cartId"));
         Long userId = Long.parseLong(intent.getMetadata().get("userId"));
 
@@ -44,7 +47,16 @@ public class OrderService {
         order.setUser(user);
         order.setStripePaymentIntentId(intent.getId());
 
+        System.out.println("running6");
         List<OrderItem> items = cart.getItems().stream().map(ci -> {
+
+            Product product = ci.getProduct();
+
+            product.setStock(
+                product.getStock() - ci.getQuantity()
+            );
+            productRepository.save(product);
+
             OrderItem oi = new OrderItem();
             oi.setOrder(order);
             oi.setProduct(ci.getProduct());

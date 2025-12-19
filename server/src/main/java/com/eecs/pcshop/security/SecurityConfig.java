@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/images/**").permitAll()
                 .requestMatchers("/api/products/add", "/api/products/delete", "/api/products/edit").authenticated()
                 .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/api/stripe/webhook").permitAll()
+                .requestMatchers("/api/webhooks/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PaymentRequest {
-    private long amount;
+    private long cartId;
     private String currency;
 }
