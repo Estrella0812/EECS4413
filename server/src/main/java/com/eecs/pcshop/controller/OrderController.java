@@ -39,7 +39,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<PagedModel<Order>> getAllOrders(
-            @PageableDefault(size = 20, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(new PagedModel<>(orderRepository.findAll(pageable)));
     }
 }
