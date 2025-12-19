@@ -31,6 +31,6 @@ services:
       - ./src:/app/src
   stripe:
     image: stripe/stripe-cli
-    command: listen --forward-to web:3000/api/webhooks/stripe --api-key ${STRIPE_SECRET_KEY}
+    command: listen --forward-to app:8080/api/webhooks/stripe --api-key ${STRIPE_SECRET_KEY}
 volumes:
   mysql_volume:
