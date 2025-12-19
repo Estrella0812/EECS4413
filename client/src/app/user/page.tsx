@@ -34,7 +34,7 @@ export default function UserPage(){
 
     return(
         <div className="max-w-7xl mx-auto my-5 min-h-[82vh]">
-            <div className="bg-zinc-900 rounded-full w-[150px] h-[150px]"></div>
+        
             <div className="my-4">
                 <h2 className="text-2xl font-bold">{sampleInfo.name}</h2>
                 <p className="text-gray-500">{user?.email || "Loading"}</p>
