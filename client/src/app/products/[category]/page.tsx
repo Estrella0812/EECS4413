@@ -2,10 +2,9 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
-import { addItemToCart, getProducts, getProductsByCategory, getProductsFilter } from "@/app/lib/products";
+import { getProductsFilter } from "@/app/lib/products";
 import { useParams, useSearchParams } from "next/navigation";
 import { Brands } from "@/app/data/brand";
-import { Categories } from "@/app/data/category";
 import { Page, Product } from "@/app/types/product";
 
 export default function Products(){
@@ -30,15 +29,6 @@ export default function Products(){
             }
         });
     };
-
-    const handleAddToCart = async (productID: number) => {
-        try{
-            const res = await addItemToCart(productID, 1);
-        }catch(err){
-            console.log("error while adding item to cart")
-        }
-
-    }
 
     // Fetch all products from api
     useEffect(() => {
@@ -162,9 +152,9 @@ export default function Products(){
                                     <p>{product.name}</p>
                                     <p className="text-pink-600">${product.price}</p>
                                 </Link>
-                                <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                                    Add to Cart
-                                </button>
+                                <p className={`text-sm mt-1 ${product.stock > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    {product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
+                                </p>
                             </div>
                         ))}
                     </div>

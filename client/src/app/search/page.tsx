@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Page, Product } from "../types/product";
-import { addItemToCart, getProductsFilter } from "../lib/products";
-import { Categories } from "../data/category";
+import {  getProductsFilter } from "../lib/products";
 import { Brands } from "../data/brand";
+import Popup from "../../../components/Popup";
 
 export default function SearchPage(){
         const params = useSearchParams();
@@ -19,6 +19,7 @@ export default function SearchPage(){
         const [maxPrice, setMaxPrice] = useState<number>(10000);
         const [brands, setBrands] = useState<string[]>([]);
         const [products, setProducts] = useState<Product[]>([]);
+        const [open, setOpen] = useState(false);
     
         const handleBrandSelected = (subIndex: string) => {
             setBrands((prevItems) => {
@@ -32,14 +33,6 @@ export default function SearchPage(){
             });
         };
     
-        const handleAddToCart = async (productID: number) => {
-            try{
-                const res = await addItemToCart(productID, 1);
-            }catch(err){
-                console.log("error while adding item to cart")
-            }
-    
-        }
     
         // Fetch all products from api
         useEffect(() => {
@@ -52,8 +45,7 @@ export default function SearchPage(){
 
     return(
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-4 grid-cols-1 my-18">
-
-            {/* Filters */}
+            <Popup message={`There is a limit to this product's stock, and you already have some in your cart.`} isOpen={open} onClose={() => setOpen(false)}/>
             <section className="lg:col-span-3 flex flex-col items-center gap-x-8 mr-4">
                 <div className="text-2xl font-semibold p-2 pl-4 w-full">Filters</div>
                 <div className="w-full grid gap-y-1 divide-y divide-white border-white border-t-1 border-b-1">
@@ -145,6 +137,7 @@ export default function SearchPage(){
                     
                     <div className="grid grid-cols-3 gap-4">
                         {products.map((product, index) => (
+                            
                             <div className="p-4 aspect-square" key={index}>
                                 <Link href={`/productdetail/${product.id}`} prefetch={false}>
                                     <div className="relative w-full h-2/3 mb-4 bg-white shadow-xl rounded-2xl overflow-hidden">
@@ -159,9 +152,9 @@ export default function SearchPage(){
                                     <p>{product.name}</p>
                                     <p className="text-pink-600">${product.price}</p>
                                 </Link>
-                                <button onClick={() => handleAddToCart(product.id)} className="mt-2 px-4 py-2 text-white max-w-[200px] rounded-full gradient-bg">
-                                    Add to Cart
-                                </button>
+                                <p className={`text-sm mt-1 ${product.stock > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    {product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
+                                </p>
                             </div>
                         ))}
                     </div>

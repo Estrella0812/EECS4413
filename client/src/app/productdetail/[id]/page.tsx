@@ -1,10 +1,11 @@
 import { getProductById } from "@/app/lib/products";
 import ProductCarousel from "../../../../components/ProductCarousel";
 import CartAction from "../../../../components/CartAction";
+import { Product } from "@/app/types/product";
 
 export default async function productsDetail({params}:{params:Promise<{id: string}>}){
     const { id } = await params;
-    const data = await getProductById(Number(id));
+    const data: Product = await getProductById(Number(id));
 
     return (
         <div className="w-full min-h-[83vh] flex items-center"> 
@@ -12,7 +13,7 @@ export default async function productsDetail({params}:{params:Promise<{id: strin
             <section className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col lg:flex-row gap-8 lg:gap-16 py-8 lg:py-12 items-start">
                 
                 <div className="w-full lg:w-1/2 lg:sticky lg:top-24">
-                    <ProductCarousel images={data.images} />
+                    <ProductCarousel images={data.images && data.images.length > 0 ? data.images : [{ id: 1, url: data.mainImageUrl, product: data, isMain: true, altText: data.name}]} />
                 </div>
 
                 <div className="w-full lg:w-1/2 flex flex-col space-y-6 text-left">
@@ -38,7 +39,7 @@ export default async function productsDetail({params}:{params:Promise<{id: strin
 
                     <hr className="border-zinc-800" />
                     
-                    <CartAction stock={data.stock} productId={data.id}/>
+                    <CartAction product={data}/>
                 </div>
             </section>
         </div>

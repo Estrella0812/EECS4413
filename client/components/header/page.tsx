@@ -2,10 +2,13 @@
 import Link from "next/link";
 import { UserIcon, CartIcon, SearchIcon, ChevDownIcon } from "../icons/page"
 import { useRouter } from "next/navigation";
+import { useGlobalCart } from "@/context/CartContext";
+import { CartItem } from "@/app/types/cart";
 
 export default function Header(){
     const router = useRouter();
-
+    const { cart, isLoaded } = useGlobalCart();
+    const total = cart.items.reduce((total: number, item: CartItem) => total + item.quantity, 0);
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -50,7 +53,21 @@ export default function Header(){
                 </form>
 
                 <Link href="/user" prefetch={false}><UserIcon/></Link>
-                <Link href="/cart" prefetch={false}><CartIcon/></Link>
+                <div className="flex items-center">
+                    <Link 
+                        href="/cart" 
+                        prefetch={false} 
+                        className="relative flex items-center p-2 group"
+                    >
+                        <CartIcon />
+                        
+                        {isLoaded && cart.items.length > 0 && (
+                            <span className="absolute top-0 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-2 ring-black group-hover:bg-blue-500 transition-colors animate-in zoom-in duration-200">
+                                {total > 99 ? '99+' : total}
+                            </span>
+                        )}
+                    </Link>
+                </div>
             </div>
 
         </header>
