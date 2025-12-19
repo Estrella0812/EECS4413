@@ -6,6 +6,7 @@ On a terminal:
 cd server
 docker compose down -v
 docker compose up --build
+Note: You may need to create a Stripe account to test the payment workflow
 
 On a new seperate terminal:
 cd client
