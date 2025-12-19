@@ -5,7 +5,7 @@ export const Categories = [
     "MEMORY",
     "STORAGE",
     "MOTHERBOARD",
-    "COLLER",
+    "COOLER",
     "CASE",
     "PERIPHERAL"
 ]

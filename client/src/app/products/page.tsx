@@ -163,10 +163,10 @@ export default function Products(){
                     </div>
                 </section>
 
-                <div className="flex justify-center ites-center gap-x-5 mt-10 text-lg">
+                <div className="flex justify-center items-center gap-x-5 mt-10 text-lg">
                     {parseInt(page) > 1 && <Link href={`/products?page=${parseInt(page)-1}`} className="text-2xl" prefetch={false}>‹</Link>}
                     <p>{page}</p>
-                    {pageInfo && pageInfo.totalPages && pageInfo.totalPages > parseInt(page) && <Link href={`/products?page=${parseInt(page)+1}`} className="text-2xl" prefetch={false}>›</Link>}
+                    {<Link href={`/products?page=${parseInt(page)+1}`} className="text-2xl" prefetch={false}>›</Link>}
                 </div>
             </section>
         </div>
