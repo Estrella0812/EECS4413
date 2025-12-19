@@ -1,5 +1,9 @@
 'use client';
 
+import { fetchAllUsers } from "@/app/lib/adminCalls";
+import { Page } from "@/app/types/product";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const sampleOrders = [
@@ -23,37 +27,35 @@ const sampleOrders = [
 ];
 
 
-type Order = {
+type User = {
   id: number;
   email: string;
   name: string;
+  role: string;
 };
 
 export default function PurchaseHistory() {
-  const [users, setUsers] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  /* useEffect(() => {
-    fetch("http://localhost:8080/api/orders", {
-      credentials: "include",
-    })
-      .then(res => res.json())
-      .then(data => setOrders(data))
-      .finally(() => setLoading(false));
-  }, []); actual code*/
+    const params = useSearchParams();
+    const page = parseInt(params.get("page")||"1");
+    const [users, setUsers] = useState<User[]>([]);
+    const [pageInfo, setPageInfo] = useState<Page|null>(null);
 
     useEffect(() => {
-        setTimeout(() => {
-            setUsers(sampleOrders);
-            setLoading(false);
-        }, 500);
-    }, []);
+        fetchAllUsers(page-1)
+        .then(result=>{
+            setUsers(result.content);
+            setPageInfo(result.page);
+        });
+    }, [page]);
 
   return (
     <div className="max-w-7xl mx-auto my-5 min-h-[82vh]">
-      <h2 className="text-2xl font-bold mb-6">Users List</h2>
+      <div className="flex justify-between mb-6 items-center">
+        <h2 className="text-2xl font-bold">Users</h2>
+        <Link href="/admin" className="bg-white p-3 text-zinc-900 font-bold rounded-xl" prefetch={false}>back</Link>
+      </div>
 
-      {loading && <p>Loading orders...</p>}
+      {users.length==0 && <p>No Registered Users Yet</p>}
 
       <div className="space-y-6">
         {users.map((user, index) => {
@@ -76,11 +78,21 @@ export default function PurchaseHistory() {
                     <span className="">name:</span>
                     <span className="">{user.name}</span>
                 </div>
+
+                <div className="flex gap-x-4 px-4 py-3 text-sm">
+                    <span className="">role:</span>
+                    <span className={user.role==="ADMIN"?"font-bold bg-pink-700 px-5":""}>{user.role}</span>
+                </div>
             
             </div>
         );
         })}
       </div>
+      <div className="flex justify-center ites-center gap-x-5 mt-10 text-lg">
+            {page > 1 && <Link href={`/admin/users?page=${page-1}`} className="text-2xl" prefetch={false}>‹</Link>}
+            <p>{page}</p>
+            {pageInfo && pageInfo.totalPages && pageInfo.totalPages > page && <Link href={`/admin/users?page=${page+1}`} className="text-2xl" prefetch={false}>›</Link>}
+        </div>
     </div>
   );
 }
