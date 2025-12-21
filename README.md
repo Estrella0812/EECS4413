@@ -48,4 +48,9 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 and fill out the stripe public  key after obtaining it by following the instructions in the backend section.
 
+Install all the necessary dependencies by running the following command:
+```
+npm install
+```
+
 Finally, run `npm run dev`.
