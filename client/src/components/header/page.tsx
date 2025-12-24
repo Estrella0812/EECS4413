@@ -1,24 +1,29 @@
 'use client'
 import Link from "next/link";
-import { UserIcon, CartIcon, SearchIcon, ChevDownIcon } from "../icons/page"
-import { useRouter } from "next/navigation";
+import { UserIcon, CartIcon, SearchIcon } from "../icons/page"
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGlobalCart } from "@/context/CartContext";
 import { CartItem } from "@/app/types/cart";
+import { useDebounce } from "@/hooks/useDebounce";
+import { ChangeEvent } from "react";
 
 export default function Header(){
     const router = useRouter();
+    const params = useSearchParams();
     const { cart, isLoaded } = useGlobalCart();
     const total = cart.items.reduce((total: number, item: CartItem) => total + item.quantity, 0);
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
-        const query = formData.get("search")?.toString() ?? "";
-
-        if (query.trim() !== "") {
-            router.push(`/search?q=${encodeURIComponent(query)}`);
+    function search(e: ChangeEvent<HTMLInputElement>) {
+        const query = e.target.value ?? "";
+        const searchParams = new URLSearchParams(params);
+        searchParams.set("page", "0");
+        if (query.trim() === "") {
+            searchParams.delete("query");
+        } else {
+            searchParams.set("query", query);
         }
-    };
+        router.push(`search?${searchParams}`);
+    }
 
     return(
         <header className="relative flex items-center py-8 px-14">
@@ -33,14 +38,14 @@ export default function Header(){
             {/* Center section - ABSOLUTE CENTERED */}
             <nav className="absolute left-1/2 -translate-x-1/2 flex gap-x-6">
                 <Link href="/" className="text-lg" prefetch={false}>Home</Link>
-                <Link href="/products" className="text-lg" prefetch={false}>Products</Link>
+                <Link href="/search" className="text-lg" prefetch={false}>Products</Link>
             </nav>
 
             {/* Right section */}
             <div className="ml-auto flex items-center gap-x-5">
-                <form onSubmit={handleSearch}>
                     <div className="relative">
                         <input 
+                            onChange={useDebounce(search, 200)}
                             type="text" 
                             name="search" 
                             placeholder="Search products..."
@@ -50,7 +55,6 @@ export default function Header(){
                             <SearchIcon />
                         </button>
                     </div>
-                </form>
 
                 <Link href="/user" prefetch={false}><UserIcon/></Link>
                 <div className="flex items-center">

@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-import { PurchaseHistoryIcon } from "@/../components/icons/page";
+import { PurchaseHistoryIcon } from "@/components/icons/page";
 import { logout } from "../lib/authentication";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../lib/users";

@@ -45,20 +45,9 @@ export async function getProductsByBrand(brand: string): Promise<Product[]> {
     return response.json();
 }
 
-export async function getProductsFilter(
-    {query="", sort="", category="", brands=[], minPrice=0, maxPrice=10000, inStock=true, page=0, size=9}:
-    {query?: string, sort?: string, category?: string, brands?: string[], minPrice?: number, maxPrice?: number, inStock?: boolean, page?: number, size?: number}
-): Promise<ProductResult>{
-    // Build Query
-    var q = "?"
-    if(brands.length > 0){
-        for(const b of brands){
-            q += `brands=${b}&`
-        }
-    }
-    q += `query=${query}&sort=${sort}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=${inStock}&page=${page}&size=${size}`;
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/filter${q}`, {
+export async function getProductsFilter(productQuery: URLSearchParams): Promise<ProductResult>{
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/products/filter?${productQuery}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/filter?${productQuery}`, {
         method: 'GET',
         cache: "no-store",
         headers: {

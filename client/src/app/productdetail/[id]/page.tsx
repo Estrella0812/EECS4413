@@ -1,6 +1,6 @@
 import { getProductById } from "@/app/lib/products";
-import ProductCarousel from "../../../../components/ProductCarousel";
-import CartAction from "../../../../components/CartAction";
+import ProductCarousel from "../../../components/ProductCarousel";
+import CartAction from "../../../components/CartAction";
 import { Product } from "@/app/types/product";
 
 export default async function productsDetail({params}:{params:Promise<{id: string}>}){

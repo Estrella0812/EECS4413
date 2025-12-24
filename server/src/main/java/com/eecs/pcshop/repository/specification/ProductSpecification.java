@@ -17,6 +17,7 @@ public class ProductSpecification {
             if (query != null && query.getResultType() != Long.class) {
                 // an optimization
                 root.fetch("images", JoinType.LEFT);
+                query.distinct(true);
             }
 
             String searchQuery = searchCriteria.getQuery();
@@ -45,7 +46,7 @@ public class ProductSpecification {
                         : cb.equal(root.get("stock"), 0));
             }
             if (searchCriteria.getBrands() != null) {
-                predicates.add(cb.or(Arrays.stream(searchCriteria.getBrands())
+                predicates.add(cb.or(searchCriteria.getBrands().stream()
                         .map(brand -> cb.equal(root.get("brand"), brand))
                         .toArray(Predicate[]::new)
                 ));
